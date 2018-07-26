@@ -7,6 +7,13 @@
   (add-to-list 'load-path (law-create-emacs-path "themes/"))
   (add-to-list 'custom-theme-load-path (law-create-emacs-path "themes/"))
 
+  (require 'law-config)
+  (require 'law-lib)
+  (require 'law-mode)
+  (require 'law-mode-line)
+
+  (load-theme 'glacier t nil)
+
   (setq package-archives
         '(("gnu"       . "http://elpa.gnu.org/packages/")
           ("original"  . "http://tromey.com/elpa/")
@@ -16,20 +23,21 @@
 
   (package-initialize)
 
-  (require 'law-config)
-  (require 'law-lib)
-  (require 'law-mode)
-  (require 'law-mode-line)
+  (unless package-archive-contents
+    (package-refresh-contents))
 
-  (load-theme 'glacier t nil)
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
 
   (require 'use-package)
 
   (use-package evil
+    :ensure
     :init (setq evil-toggle-key "")
     :config (evil-mode 1))
 
   (use-package paredit
+    :ensure
     :bind (("RET" . law-electrify-return-if-match))
     :hook ((emacs-lisp-mode lisp-mode clojure-mode
                             lisp-interaction-mode scheme-mode)
@@ -38,6 +46,7 @@
     (paredit-mode t))
 
   (use-package eldoc
+    :ensure
     :config
 	  (eldoc-mode)
 	  (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
@@ -45,6 +54,7 @@
 	  (eldoc-add-command 'law-electrify-return-if-match))
 
   (use-package evil-paredit
+    :ensure
     :hook (paredit-mode . evil-paredit-mode))
 
   (use-package ivy
@@ -64,6 +74,7 @@
 
   ;; Used for smooth scrolling
   (use-package sublimity
+    :ensure
     :config
     (require 'sublimity)
     (require 'sublimity-scroll)
@@ -73,6 +84,7 @@
     (setq sublimity-auto-hscroll-mode 1))
 
   (use-package js2-mode
+    :ensure
     :defer t
     :init
     (setq js2-mode-show-parse-errors nil)
@@ -87,6 +99,7 @@
 		       ("\C-cl"    . js-load-file-and-go)))
 
   (use-package geiser
+    :ensure
     :defer t
     :hook (scheme-mode . geiser-mode))
 
@@ -129,11 +142,10 @@
  '(evil-visual-state-cursor '(box "#27f1bf") t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
-   '(d-mode sublimity highlight-numbers visible-mark ess
-            minesweeper typing inf-ruby use-package speed-type slime
-            rainbow-mode pdf-tools nlinum-relative linum-relative key-chord
-            js2-mode js-comint ivy go-mode geiser flycheck evil-paredit
-            evil-magit cider bongo auctex adaptive-wrap))
+   '(d-mode sublimity highlight-numbers visible-mark ess typing use-package
+            speed-type slime rainbow-mode key-chord js2-mode js-comint ivy
+            go-mode geiser flycheck evil-paredit evil-magit cider bongo auctex
+            adaptive-wrap))
  '(safe-local-variable-values '((Lexical-binding . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

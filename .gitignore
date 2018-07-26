@@ -57,6 +57,6 @@ flycheck_*.el
 # Undo-tree save-files
 *.~undo-tree
 
-recentf
-
 .DS_Store
+recentf
+network-security.data

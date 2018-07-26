@@ -12,7 +12,6 @@
                          scheme-mode html-mode nxml-mode js-mode js2-mode
                          ruby-mode))
 
-
 (setq initial-scratch-message ";; Lisp *scratch* Buffer\n\n")
 (setq truncate-partial-width-windows t)
 (setq ad-redefinition-action 'accept)
@@ -171,7 +170,7 @@
 
 (setf (nth 5 (assoc 'gcc-include compilation-error-regexp-alist-alist)) 0)
 
-;; Fix for D comile errors:
+;; Fix for D compile errors:
 (add-to-list
  'compilation-error-regexp-alist
  '("^\\([^ \n]+\\)(\\([0-9]+\\)): \\(?:error\\|.\\|warnin\\(g\\)\\|remar\\(k\\)\\)"

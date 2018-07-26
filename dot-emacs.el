@@ -5,7 +5,7 @@
       law-win32 (eq system-type 'windows-nt)
       law-linux (eq system-type 'gnu/linux))
 
-(cond ((eq law-osx t)   (setq user-emacs-directory "~/Dropbox/.emacs.d"))
+(cond ((eq law-osx   t) (setq user-emacs-directory "~/Dropbox/.emacs.d"))
       ((eq law-linux t) (setq user-emacs-directory "~/Dropbox/.emacs.d"))
       ((eq law-win32 t) (setq user-emacs-directory "e:/")))
 
