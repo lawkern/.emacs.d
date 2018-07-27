@@ -48,10 +48,10 @@
   (use-package eldoc
     :ensure
     :config
-	  (eldoc-mode)
-	  (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
-	  (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
-	  (eldoc-add-command 'law-electrify-return-if-match))
+    (eldoc-mode)
+    (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
+    (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
+    (eldoc-add-command 'law-electrify-return-if-match))
 
   (use-package evil-paredit
     :ensure
@@ -59,16 +59,16 @@
 
   (use-package ivy
     :diminish ivy-mode
-	  :bind (:map ivy-minibuffer-map
-			          ;; ("C-h" . "DEL")
-			          ("C-j" . ivy-next-line)
-			          ("C-k" . ivy-previous-line)
-			          ("C-l" . ivy-alt-done)
-			          ("RET" . ivy-alt-done))
-	  :config
-	  (setq ivy-use-virtual-buffers t)
-	  (setq ivy-count-format "(%d/%d) ")
-	  (setq ivy-extra-directories nil))
+    :bind (:map ivy-minibuffer-map
+                ;; ("C-h" . "DEL")
+                ("C-j" . ivy-next-line)
+                ("C-k" . ivy-previous-line)
+                ("C-l" . ivy-alt-done)
+                ("RET" . ivy-alt-done))
+    :config
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (setq ivy-extra-directories nil))
 
   (ivy-mode 1)
 
@@ -83,6 +83,8 @@
           sublimity-scroll-drift-length 1)
     (setq sublimity-auto-hscroll-mode 1))
 
+  (use-package d-mode :ensure :defer t)
+
   (use-package js2-mode
     :ensure
     :defer t
@@ -92,11 +94,11 @@
     (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
     (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js2-mode))
 
-	  :bind (("\C-x\C-e" . js-send-last-sexp)
-		       ("\C-\M-x"  . js-send-last-sexp-and-go)
-		       ("\C-cb"    . js-send-buffer)
-		       ("\C-c\C-b" . js-send-buffer-and-go)
-		       ("\C-cl"    . js-load-file-and-go)))
+    :bind (("\C-x\C-e" . js-send-last-sexp)
+           ("\C-\M-x"  . js-send-last-sexp-and-go)
+           ("\C-cb"    . js-send-buffer)
+           ("\C-c\C-b" . js-send-buffer-and-go)
+           ("\C-cl"    . js-load-file-and-go)))
 
   (use-package geiser
     :ensure
