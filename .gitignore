@@ -1,62 +1,27 @@
-# -*- mode: gitignore; -*-
 *~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
+*.rel
 *.elc
+*.~undo-tree
+*_archive
+*_flymake.*
+.cask
+.cask/
+.projectile
+.dir-locals.el
+.org-id-locations
+
+flycheck_*.el
+dist/
+network-security.data
+recentf
 auto-save-list
 tramp
+
+\#*\#
 .\#*
 
-# Org-mode
-.org-id-locations
-*_archive
-
-# flymake-mode
-*_flymake.*
-
-# eshell files
 /eshell/history
 /eshell/lastdir
-
-# elpa packages
 /elpa/
-
-# reftex files
-*.rel
-
-# AUCTeX auto folder
 /auto/
-
-# cask packages
-.cask/
-dist/
-
-# Flycheck
-flycheck_*.el
-
-# server auth directory
 /server/
-
-# projectiles files
-.projectile
-
-# directory configuration
-.dir-locals.el
-
-
-# Compiled
-*.elc
-
-# Packaging
-.cask
-
-# Backup files
-*~
-
-# Undo-tree save-files
-*.~undo-tree
-
-.DS_Store
-recentf
-network-security.data
