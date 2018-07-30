@@ -12,7 +12,7 @@
                          scheme-mode html-mode nxml-mode js-mode js2-mode
                          ruby-mode))
 
-(setq initial-scratch-message ";; Lisp *scratch* Buffer\n\n")
+;; (setq initial-scratch-message ";; Lisp *scratch* Buffer\n\n")
 (setq truncate-partial-width-windows t)
 (setq ad-redefinition-action 'accept)
 (setq ring-bell-function 'ignore)

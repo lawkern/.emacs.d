@@ -72,7 +72,7 @@
      `(whitespace-newline ((t (:foreground ,glacier-dim))))
 
      `(show-paren-match ((t (:foreground ,glacier-green :weight bold))))
-     `(success ((t (:foreground ,glacier-green :weight bold))))
+     `(success ((t (:foreground ,glacier-blue+ :weight bold))))
      `(warning ((t (:foreground ,glacier-red+))))
      `(error ((t (:foreground ,glacier-red))))
      `(minibuffer-prompt ((default (:foreground ,glacier-ice+))))
@@ -83,6 +83,7 @@
      `(isearch ((t (:foreground ,glacier-shadow+ :background ,glacier-green))))
      `(isearch-fail ((t (:foreground ,glacier-red :background nil))))
      `(lazy-highlight ((t (:foreground ,glacier-ice+ :background ,glacier-ice-))))
+
 
      ;; Font-lock
      `(font-lock-builtin-face ((t (:foreground ,glacier-blue+))))

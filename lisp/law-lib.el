@@ -9,7 +9,7 @@
   (interactive)
   (delete-other-windows)
   (message "frame width: %d\n" (frame-width))
-  (let ((max-window-width 100))
+  (let ((max-window-width 90))
     (dotimes (i (- (/ (frame-width) max-window-width) 1))
       (split-window-horizontally)))
   (balance-windows))
