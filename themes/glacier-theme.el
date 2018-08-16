@@ -12,11 +12,10 @@
           (dark-class (append '((background dark)) class))
           (variant ,variant)
 
-          (glacier-ice++ "#a3bfdc") ;;dbe5e9
+          (glacier-ice++ "#a3bfdc")
           (glacier-ice+ "#7ea4ce")
-          (glacier-ice "#5980a6") ;; 7c94b0
-          ;; (glacier-ice- "#546c92")
-          (glacier-ice- "#3e5974") ;; 495e80
+          (glacier-ice "#5980a6")
+          (glacier-ice- "#3e5974")
           (glacier-ice-- "#1a2f47")
 
           (glacier-shadow+ "#233343")
@@ -27,10 +26,10 @@
           (glacier-blue "#00ccff")
           (glacier-blue- "#0086b3")
 
-          (glacier-yellow "#c9ff94") ;; ffe792
-          (glacier-green "#27f1bf") ;;27f1a4
-          (glacier-red+ "#f99ff9") ;; edabcc
-          (glacier-red "#f448f4")
+          (glacier-yellow "#c9ff94")
+          (glacier-green "#27f1bf")
+          (glacier-red+ "#f99ff9")
+          (glacier-red "#f556cd")
 
           (glacier-fg (if (eq variant 'light) glacier-ice glacier-ice))
           (glacier-bg (if (eq variant 'light) glacier-ice+ glacier-shadow))
@@ -76,7 +75,7 @@
      `(warning ((t (:foreground ,glacier-red+))))
      `(error ((t (:foreground ,glacier-red))))
      `(minibuffer-prompt ((default (:foreground ,glacier-ice+))))
-     `(region ((t (:foreground ,glacier-shadow :background ,glacier-ice))))
+     `(region ((t (:foreground nil :background nil))))
      `(highlight ((t (:foreground ,glacier-green :background ,glacier-shadow+))))
      `(tooltip ((t (:foreground ,glacier-ice :background ,glacier-shadow
                                 :color ,glacier-ice :height 0.9))))
@@ -84,6 +83,7 @@
      `(isearch-fail ((t (:foreground ,glacier-red :background nil))))
      `(lazy-highlight ((t (:foreground ,glacier-ice+ :background ,glacier-ice-))))
 
+     `(visible-mark-active ((t (:foreground ,glacier-shadow :background ,glacier-ice-))))
 
      ;; Font-lock
      `(font-lock-builtin-face ((t (:foreground ,glacier-blue+))))
@@ -94,7 +94,7 @@
      `(font-lock-variable-name-face ((t (:foreground ,glacier-ice))))
      `(font-lock-constant-face ((t (:foreground ,glacier-ice+))))
      `(font-lock-type-face ((t (:foreground ,glacier-blue+))))
-     `(font-lock-preprocessor-face ((t (:foreground ,glacier-ice-))))
+     `(font-lock-preprocessor-face ((t (:foreground ,glacier-ice))))
      `(font-lock-negation-char-face ((t (:foreground ,glacier-blue+))))
      `(font-lock-warning-face ((t (:foreground ,glacier-red))))
 
@@ -121,6 +121,7 @@
      `(mode-line-insert ((t (:foreground ,glacier-insert))))
      `(mode-line-normal ((t (:foreground ,glacier-normal))))
      `(mode-line-visual ((t (:foreground ,glacier-visual))))
+     `(mode-line-operator ((t (:foreground ,glacier-red))))
 
      `(comint-highlight-input ((default (:foreground ,glacier-ice-))))
      `(comint-highlight-prompt ((default (:foreground ,glacier-ice+))))
@@ -155,6 +156,13 @@
      `(js2-warning ((t (:underline ,glacier-red+))))
      `(js2-error ((t (:underline ,glacier-red))))
 
+     `(tuareg-font-lock-interactive-output-face ((t (:foreground ,glacier-blue+))))
+     `(tuareg-font-lock-governing-face ((t (:foreground ,glacier-blue+ :weight bold))))
+     `(tuareg-font-lock-operator-face ((t (:foreground ,glacier-ice+))))
+     `(tuareg-font-double-colon-face ((t (:foreground ,glacier-ice))))
+     `(tuareg-font-lock-error-face ((t (:foreground ,glacier-yellow :background ,glacier-red))))
+     `(tuareg-font-lock-module-face ((t (:foreground ,glacier-ice))))
+
      `(web-mode-html-tag-face ((t (:foreground ,glacier-ice+))))
      `(web-mode-html-tag-bracket-face ((t (:foreground ,glacier-ice))))
      `(web-mode-html-attr-name-face ((t (:foreground ,glacier-ice))))
@@ -169,8 +177,6 @@
      `(outline-4 ((t (:foreground ,glacier-ice-))))
      `(outline-5 ((t (:foreground ,glacier-ice))))
      `(outline-6 ((t (:foreground ,glacier-ice+))))
-
-     `(visible-mark-active ((t (:foreground ,glacier-ice+))))
 
      `(org-document-info-keyword ((t (:foreground ,glacier-ice-))))
      `(org-document-title ((t (:foreground ,glacier-ice))))
@@ -190,7 +196,7 @@
      `(evil-normal-state-cursor   '(box ,glacier-cursor))
      `(evil-insert-state-cursor   '((bar . 3) ,glacier-insert))
      `(evil-visual-state-cursor   '(box ,glacier-visual))
-     `(evil-motion-state-cursor   '(box ,glacier-red))
+     `(evil-motion-state-cursor   '(box ,glacier-cursor))
      `(evil-replace-state-cursor  '(box ,glacier-red))
      `(evil-operator-state-cursor '(box ,glacier-red))))
 

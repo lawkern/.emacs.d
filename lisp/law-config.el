@@ -42,6 +42,8 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 
+(setq font-lock-maximum-decoration t)
+
 (setq c-default-style "linux" c-basic-offset 2)
 (setq c-basic-offset 2)
 (setq cperl-indent-level 2)
@@ -82,24 +84,29 @@
 
 (set-variable 'grep-command "grep -irHn ")
 
-(setq law-font "Source Code Pro-9")
-;; (setq law-font "ProggyCleanTTSZ-12")
-;; (setq law-font "Source Code Pro Semibold-10")
-;; (setq law-font "Meslo LG M-12")
-
-(set-frame-font law-font nil)
-(add-to-list 'default-frame-alist `(font . ,law-font))
-
 (when law-win32
+  (setq law-font "Source Code Pro-9")
+  ;; (setq law-font "ProggyCleanTTSZ-16")
+  ;; (setq law-font "Source Code Pro Semibold-10")
+  ;; (setq law-font "Meslo LG M-12")
+
   (set-variable 'grep-command "findstr -s -n -i -l ")
   (setq compile-command "build.bat")
-  (setenv "PATH" (concat (getenv "PATH") ";H:\\node\\;C:\\jdk1.8.0_162;C:\\jdk1.8.0_162\\bin;C:\\NASM\\"))
+  (setenv "PATH"
+          (concat "C:\\Ocaml64\\bin;"
+                  "C:\\node\\;"
+                  "C:\\jdk1.8.0_162;"
+                  "C:\\jdk1.8.0_162\\bin;"
+                  "C:\\NASM\\;"
+                  (getenv "PATH")))
   (setenv "JRE_HOME" "C:\\jdk1.8.0_162\\jre")
   (setq python-shell-interpreter "c:\\python27\\python.exe")
   (setq exec-path (append exec-path '("H:\\node\\;C:\\NASM\\"))))
 
 (when law-osx
+  (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
+  (setq law-font "Source Code Pro-12")
   (setq mac-command-key-is-meta t
         exec-path (append exec-path '("/usr/local/bin"))
         inferior-lisp-program "/applications/lang/cmucl/bin/lisp"
@@ -111,6 +118,9 @@
           (sbcl ("sbcl"))))
 
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/Library/TeX/texbin")))
+
+(set-frame-font law-font nil)
+(add-to-list 'default-frame-alist `(font . ,law-font))
 
 (when law-work-code-style
   (add-hook 'js2-mode-hook 'law-fix-js-for-work)

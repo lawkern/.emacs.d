@@ -38,6 +38,11 @@
   "VI Visual Mode indicator on mode line"
   :group 'basic-faces)
 
+(defface mode-line-operator
+  '((t (:foreground "red")))
+  "VI Operator Mode indicator on mode line"
+  :group 'basic-faces)
+
 (setq law--mode-line-buffer-name
       (list
        ;; (when (display-graphic-p)
@@ -64,9 +69,9 @@
                (symbol-name evil-state)
                'face
                (cond ((eq evil-state 'insert) 'mode-line-insert)
-                     ((eq evil-state 'normal) 'mode-line-normal)
                      ((eq evil-state 'visual) 'mode-line-visual)
-                     (t 'mode-line-warning))))))
+                     ((eq evil-state 'operator) 'mode-line-operator)
+                     (t 'mode-line-normal))))))
 
 (setq law--mode-line-time-save;; was this buffer modified since the last save?
       (list '(:eval

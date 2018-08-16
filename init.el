@@ -57,10 +57,10 @@
     :ensure
     :hook (paredit-mode . evil-paredit-mode))
 
-  (use-package ivy
+  (use-package ivy :ensure :defer t
     :diminish ivy-mode
     :bind (:map ivy-minibuffer-map
-                ;; ("C-h" . "DEL")
+                ("C-h" . "DEL")
                 ("C-j" . ivy-next-line)
                 ("C-k" . ivy-previous-line)
                 ("C-l" . ivy-alt-done)
@@ -68,9 +68,11 @@
     :config
     (setq ivy-use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) ")
-    (setq ivy-extra-directories nil))
+    (setq ivy-extra-directories nil)
 
-  (ivy-mode 1)
+    :init
+    (ivy-mode 1))
+
 
   ;; Used for smooth scrolling
   (use-package sublimity
@@ -85,9 +87,20 @@
 
   (use-package d-mode :ensure :defer t)
 
-  (use-package js2-mode
-    :ensure
-    :defer t
+  (use-package tuareg :ensure :defer t
+    :init
+    ;; (setq tuareg-prettify-symbols-full t)
+    (setq tuareg-indent-align-with-first-arg t))
+
+  (use-package highlight-numbers :ensure :defer t)
+
+  (defface visible-mark-active
+    '((t (:foreground green :underline "green"))) "")
+
+  (use-package visible-mark :ensure :defer t
+    :init (global-visible-mark-mode 1))
+
+  (use-package js2-mode :ensure :defer t
     :init
     (setq js2-mode-show-parse-errors nil)
     (setq js2-mode-show-strict-warnings nil)
@@ -100,11 +113,8 @@
            ("\C-c\C-b" . js-send-buffer-and-go)
            ("\C-cl"    . js-load-file-and-go)))
 
-  (use-package geiser
-    :ensure
-    :defer t
+  (use-package geiser :ensure :defer t
     :hook (scheme-mode . geiser-mode))
-
 
   (autoload 'key-chord-mode "key-chord")
   (autoload 'rainbow-mode "rainbow-mode" "Color current buffer" t)
@@ -144,10 +154,10 @@
  '(evil-visual-state-cursor '(box "#27f1bf") t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
-   '(d-mode sublimity highlight-numbers visible-mark ess typing use-package
-            speed-type slime rainbow-mode key-chord js2-mode js-comint ivy
-            go-mode geiser flycheck evil-paredit evil-magit cider bongo auctex
-            adaptive-wrap))
+   '(tuareg d-mode sublimity highlight-numbers visible-mark ess
+            typing use-package speed-type slime rainbow-mode
+            key-chord js2-mode js-comint ivy geiser
+            evil-paredit cider bongo auctex adaptive-wrap))
  '(safe-local-variable-values '((Lexical-binding . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

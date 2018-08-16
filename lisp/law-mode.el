@@ -37,13 +37,13 @@
 ;;JS
 
 ;;Editing
-(define-key law-bind-mode-map (kbd "C-x C-m") 'execute-extended-command)
-(define-key law-bind-mode-map (kbd "C-c C-m") 'execute-extended-command)
+(define-key law-bind-mode-map (kbd "C-;") 'execute-extended-command)
 (define-key law-bind-mode-map (kbd "C-c l") "λ")
 (define-key law-bind-mode-map (kbd "C-c r") 'query-replace)
 (define-key law-bind-mode-map (kbd "C-c s") 'ff-find-other-file)
 (define-key law-bind-mode-map (kbd "C-c c") 'compile)
 (define-key law-bind-mode-map (kbd "C-c e") 'eval-buffer)
+(define-key law-bind-mode-map (kbd "C-c C-f") 'find-file-other-window)
 
 (define-key law-bind-mode-map (kbd "C-c i") 'hs-hide-block)
 (define-key law-bind-mode-map (kbd "C-c o") 'hs-show-block)
