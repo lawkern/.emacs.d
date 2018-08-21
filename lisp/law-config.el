@@ -55,8 +55,6 @@
 
 (setq css-indent-offset 2)
 
-(setq compile-command "sh build.sh")
-
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; (key-chord-mode 1)
@@ -84,26 +82,34 @@
 
 (set-variable 'grep-command "grep -irHn ")
 
+(setq law-font "monospace")
+
 (when law-win32
+  (setq compile-command "build.bat")
   (setq law-font "Source Code Pro-9")
+  (setq python-shell-interpreter "c:\\python27\\python.exe")
+  (setq exec-path (append exec-path '("H:\\node\\;C:\\NASM\\")))
   ;; (setq law-font "ProggyCleanTTSZ-16")
   ;; (setq law-font "Source Code Pro Semibold-10")
   ;; (setq law-font "Meslo LG M-12")
-
   (set-variable 'grep-command "findstr -s -n -i -l ")
+  (setenv "PATH" (concat "c:\\node\\;c:\\NASM\\;" (getenv "PATH"))))
+
+(when law-cygwin
   (setq compile-command "build.bat")
-  (setenv "PATH"
-          (concat "C:\\Ocaml64\\bin;"
-                  "C:\\node\\;"
-                  "C:\\jdk1.8.0_162;"
-                  "C:\\jdk1.8.0_162\\bin;"
-                  "C:\\NASM\\;"
-                  (getenv "PATH")))
-  (setenv "JRE_HOME" "C:\\jdk1.8.0_162\\jre")
-  (setq python-shell-interpreter "c:\\python27\\python.exe")
-  (setq exec-path (append exec-path '("H:\\node\\;C:\\NASM\\"))))
+  (setenv "HOME" "/home/law")
+  (let ((shellname "/bin/bash"))
+    (setenv "ESHELL" shellname)
+    (setenv "SHELL" shellname)
+    (setq shell-file-name shellname))
+
+  (load "comint")
+  (setq comint-completion-addsuffix t)
+  (setq comint-eol-on-send t)
+  (setq law-font "Source Code Pro-9"))
 
 (when law-osx
+  (setq compile-command "sh build.sh")
   (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
   (setq law-font "Source Code Pro-12")

@@ -75,15 +75,15 @@
 
 
   ;; Used for smooth scrolling
-  (use-package sublimity
-    :ensure
-    :config
-    (require 'sublimity)
-    (require 'sublimity-scroll)
-    (sublimity-mode 1)
-    (setq sublimity-scroll-weight 2
-          sublimity-scroll-drift-length 1)
-    (setq sublimity-auto-hscroll-mode 1))
+  ;; (use-package sublimity
+  ;;   :ensure
+  ;;   :config
+  ;;   (require 'sublimity)
+  ;;   (require 'sublimity-scroll)
+  ;;   (sublimity-mode 1)
+  ;;   (setq sublimity-scroll-weight 2
+  ;;         sublimity-scroll-drift-length 1)
+  ;;   (setq sublimity-auto-hscroll-mode 1))
 
   (use-package d-mode :ensure :defer t)
 
@@ -145,20 +145,19 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("45f945caaeaa81a400d5b9b0232550185a91e4130db3af4a9c259399acf2b98f" default))
- '(evil-insert-state-cursor '((bar . 3) "#6ee2ff") t)
- '(evil-motion-state-cursor '(box "#f448f4") t)
- '(evil-normal-state-cursor '(box "#6ee2ff") t)
- '(evil-operator-state-cursor '(box "#f448f4") t)
- '(evil-replace-state-cursor '(box "#f448f4") t)
- '(evil-visual-state-cursor '(box "#27f1bf") t)
+   (quote
+    ("45f945caaeaa81a400d5b9b0232550185a91e4130db3af4a9c259399acf2b98f" default)))
+ '(evil-insert-state-cursor (quote ((bar . 3) "#6ee2ff")) t)
+ '(evil-motion-state-cursor (quote (box "#f448f4")) t)
+ '(evil-normal-state-cursor (quote (box "#6ee2ff")) t)
+ '(evil-operator-state-cursor (quote (box "#f448f4")) t)
+ '(evil-replace-state-cursor (quote (box "#f448f4")) t)
+ '(evil-visual-state-cursor (quote (box "#27f1bf")) t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
-   '(tuareg d-mode sublimity highlight-numbers visible-mark ess
-            typing use-package speed-type slime rainbow-mode
-            key-chord js2-mode js-comint ivy geiser
-            evil-paredit cider bongo auctex adaptive-wrap))
- '(safe-local-variable-values '((Lexical-binding . t))))
+   (quote
+    (pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+ '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

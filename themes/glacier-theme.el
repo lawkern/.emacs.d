@@ -12,11 +12,10 @@
           (dark-class (append '((background dark)) class))
           (variant ,variant)
 
-          (glacier-ice++ "#a3bfdc")
-          (glacier-ice+ "#7ea4ce")
+          (glacier-ice+ "#88b0dd")
+          ;; (glacier-ice+ "#7ea4ce")
           (glacier-ice "#5980a6")
           (glacier-ice- "#3e5974")
-          (glacier-ice-- "#1a2f47")
 
           (glacier-shadow+ "#233343")
           (glacier-shadow "#192430")
