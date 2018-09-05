@@ -55,6 +55,8 @@
 
 (setq css-indent-offset 2)
 
+(setq org-export-dispatch-use-expert-ui 1)
+
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; (key-chord-mode 1)
@@ -75,6 +77,7 @@
 (set-frame-parameter nil 'scroll-bar-background nil)
 (windmove-default-keybindings)
 (global-hl-line-mode -1)
+(tooltip-mode -1)
 
 (set-default 'truncate-lines t)
 (set 'gdb-use-separate-io-buffer nil)
@@ -86,7 +89,9 @@
 
 (when law-win32
   (setq compile-command "build.bat")
-  (setq law-font "Source Code Pro-9")
+  ;; (setq law-font "Source Code Pro-9")
+  (setq law-font "Essential PragmataPro-9")
+  (setq line-spacing 3)
   (setq python-shell-interpreter "c:\\python27\\python.exe")
   (setq exec-path (append exec-path '("H:\\node\\;C:\\NASM\\")))
   ;; (setq law-font "ProggyCleanTTSZ-16")
@@ -112,12 +117,19 @@
   (setq compile-command "sh build.sh")
   (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
-  (setq law-font "Source Code Pro-12")
+  ;; (setq law-font "Source Code Pro-12")
+  (setq law-font "Essential PragmataPro-12")
+  (setq line-spacing 3)
   (setq mac-command-key-is-meta t
         exec-path (append exec-path '("/usr/local/bin"))
         inferior-lisp-program "/applications/lang/cmucl/bin/lisp"
         geiser-racket-binary "/applications/lang/racket/bin/racket"
         slime-contribs '(slime-fancy))
+
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  (setq ns-use-proxy-icon  nil)
+  (setq frame-title-format nil)
 
   (setq slime-lisp-implementations
         '((cmucl ("/applications/lang/cmucl/bin/lisp"))
@@ -137,7 +149,14 @@
 (setq inferior-js-program-command "node --interactive")
 (setenv "NODE_NO_READLINE" "1")
 
-(add-to-list 'tooltip-frame-parameters '(internal-border-width . 10))
+;; (add-to-list 'tooltip-frame-parameters '(internal-border-width . 10))
+;; (add-to-list 'tooltip-frame-parameters '(border-width . 0))
+
+(setq tooltip-frame-parameters
+      '((border-width . 3)
+        (internal-border-width . 10)
+        (name . "tooltip")
+        (no-special-glyphs . t)))
 
 (setq whitespace-style
       '(face spaces tabs newline space-mark tab-mark newline-mark))

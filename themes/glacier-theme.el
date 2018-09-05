@@ -76,8 +76,9 @@
      `(minibuffer-prompt ((default (:foreground ,glacier-ice+))))
      `(region ((t (:foreground nil :background nil))))
      `(highlight ((t (:foreground ,glacier-green :background ,glacier-shadow+))))
-     `(tooltip ((t (:foreground ,glacier-ice :background ,glacier-shadow
-                                :color ,glacier-ice :height 0.9))))
+     `(tooltip ((t (:foreground ,glacier-ice :background ,glacier-shadow))))
+     `(border ((t (:foreground ,glacier-red :background ,glacier-shadow :color ,glacier-red))))
+     `(vertical-border ((t (:foreground ,glacier-ice-))))
      `(isearch ((t (:foreground ,glacier-shadow+ :background ,glacier-green))))
      `(isearch-fail ((t (:foreground ,glacier-red :background nil))))
      `(lazy-highlight ((t (:foreground ,glacier-ice+ :background ,glacier-ice-))))
@@ -99,17 +100,17 @@
 
      ;; Custom Font-lock
      `(font-lock-operator-face ((t (:foreground ,glacier-ice+))))
-     `(font-lock-todo ((t (:foreground ,glacier-red :weight ultra-bold :underline t))))
-     `(font-lock-important ((t (:foreground ,glacier-yellow :weight ultra-bold :underline t))))
-     `(font-lock-note ((t (:foreground ,glacier-green :weight ultra-bold :underline t))))
+     `(font-lock-todo ((t (:foreground ,glacier-green :weight ultra-bold :underline t))))
+     `(font-lock-important ((t (:foreground ,glacier-red :weight ultra-bold :underline t))))
+     `(font-lock-note ((t (:foreground ,glacier-ice+ :weight ultra-bold :underline t))))
 
      ;; Modeline
      `(mode-line ((t (:box (:line-width 2 :color ,glacier-mode-line-bg :style nil)
-                           :height 1.0 :foreground ,glacier-mode-line-fg
+                           :height 0.9 :foreground ,glacier-mode-line-fg
                            :background ,glacier-mode-line-bg))))
 
      `(mode-line-inactive ((t (:box (:line-width 2 :color ,glacier-bg :style nil)
-                                    :height 1.0 :foreground ,glacier-fg
+                                    :height 0.9 :foreground ,glacier-fg
                                     :background ,glacier-bg))))
 
      `(mode-line-path ((t (:foreground ,glacier-ice-))))
@@ -121,6 +122,16 @@
      `(mode-line-normal ((t (:foreground ,glacier-normal))))
      `(mode-line-visual ((t (:foreground ,glacier-visual))))
      `(mode-line-operator ((t (:foreground ,glacier-red))))
+
+
+     `(apropos-symbol ((t (:foreground ,glacier-ice+ :weight bold))))
+     `(apropos-function-button ((t (:foreground ,glacier-blue+ :underline t))))
+     `(apropos-user-option-button ((t (:foreground ,glacier-blue+ :underline t))))
+     `(apropos-variable-button ((t (:foreground ,glacier-blue+ :underline t))))
+     `(apropos-plist-button ((t (:foreground ,glacier-blue+ :underline t))))
+
+     `(compilation-info ((t (:foreground ,glacier-ice+ :weight bold))))
+     `(compilation-line-number ((t (:foreground ,glacier-blue+))))
 
      `(comint-highlight-input ((default (:foreground ,glacier-ice-))))
      `(comint-highlight-prompt ((default (:foreground ,glacier-ice+))))
@@ -170,15 +181,17 @@
      `(web-mode-doctype-face ((t (:foreground ,glacier-ice))))
      `(web-mode-css-selector-face ((t (:foreground ,glacier-ice+))))
 
-     `(outline-1 ((t (:foreground ,glacier-green))))
+     `(outline-1 ((t (:foreground ,glacier-blue+))))
      `(outline-2 ((t (:foreground ,glacier-ice+))))
      `(outline-3 ((t (:foreground ,glacier-ice))))
-     `(outline-4 ((t (:foreground ,glacier-ice-))))
+     `(outline-4 ((t (:foreground ,glacier-ice+))))
      `(outline-5 ((t (:foreground ,glacier-ice))))
      `(outline-6 ((t (:foreground ,glacier-ice+))))
 
      `(org-document-info-keyword ((t (:foreground ,glacier-ice-))))
-     `(org-document-title ((t (:foreground ,glacier-ice))))
+     `(org-document-title ((t (:foreground ,glacier-blue+))))
+     `(org-document-info ((t (:foreground ,glacier-ice+))))
+     `(org-latex-and-related ((t (:foreground ,glacier-ice+))))
 
 
      `(speed-type-correct ((t (:foreground ,glacier-ice-))))

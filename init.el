@@ -12,6 +12,8 @@
   (require 'law-mode)
   (require 'law-mode-line)
 
+  (require 'cfml-mode)
+
   (load-theme 'glacier t nil)
 
   (setq package-archives
@@ -33,8 +35,11 @@
 
   (use-package evil
     :ensure
-    :init (setq evil-toggle-key "")
-    :config (evil-mode 1))
+    :init
+    (setq evil-toggle-key "")
+    (setq evil-want-minibuffer t)
+    :config
+    (evil-mode 1))
 
   (use-package paredit
     :ensure
@@ -116,6 +121,9 @@
   (use-package geiser :ensure :defer t
     :hook (scheme-mode . geiser-mode))
 
+  (use-package ox-reveal :ensure :defer t
+    :init (setq org-reveal-title-slide nil))
+
   (autoload 'key-chord-mode "key-chord")
   (autoload 'rainbow-mode "rainbow-mode" "Color current buffer" t)
   (autoload 'adaptive-wrap "adaptive-wrap" nil t)
@@ -156,7 +164,7 @@
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
