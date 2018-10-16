@@ -74,7 +74,7 @@
      `(warning ((t (:foreground ,glacier-red+))))
      `(error ((t (:foreground ,glacier-red))))
      `(minibuffer-prompt ((default (:foreground ,glacier-ice+))))
-     `(region ((t (:foreground nil :background nil))))
+     `(region ((t (:foreground nil :background nil :distant-foreground nil))))
      `(highlight ((t (:foreground ,glacier-green :background ,glacier-shadow+))))
      `(tooltip ((t (:foreground ,glacier-ice :background ,glacier-shadow))))
      `(border ((t (:foreground ,glacier-red :background ,glacier-shadow :color ,glacier-red))))
@@ -92,11 +92,13 @@
      `(font-lock-keyword-face ((t (:foreground ,glacier-blue+))))
      `(font-lock-string-face ((t (:foreground ,glacier-ice+))))
      `(font-lock-variable-name-face ((t (:foreground ,glacier-ice))))
-     `(font-lock-constant-face ((t (:foreground ,glacier-ice+))))
+     `(font-lock-constant-face ((t (:foreground ,glacier-ice))))
      `(font-lock-type-face ((t (:foreground ,glacier-blue+))))
-     `(font-lock-preprocessor-face ((t (:foreground ,glacier-ice))))
+     `(font-lock-preprocessor-face ((t (:foreground ,glacier-ice ))))
      `(font-lock-negation-char-face ((t (:foreground ,glacier-blue+))))
      `(font-lock-warning-face ((t (:foreground ,glacier-red))))
+
+     `(highlight-numbers-number ((t (:foreground ,glacier-ice+))))
 
      ;; Custom Font-lock
      `(font-lock-operator-face ((t (:foreground ,glacier-ice+))))
@@ -181,7 +183,7 @@
      `(web-mode-doctype-face ((t (:foreground ,glacier-ice))))
      `(web-mode-css-selector-face ((t (:foreground ,glacier-ice+))))
 
-     `(outline-1 ((t (:foreground ,glacier-blue+))))
+     `(outline-1 ((t (:foreground ,glacier-ice))))
      `(outline-2 ((t (:foreground ,glacier-ice+))))
      `(outline-3 ((t (:foreground ,glacier-ice))))
      `(outline-4 ((t (:foreground ,glacier-ice+))))
@@ -192,6 +194,7 @@
      `(org-document-title ((t (:foreground ,glacier-blue+))))
      `(org-document-info ((t (:foreground ,glacier-ice+))))
      `(org-latex-and-related ((t (:foreground ,glacier-ice+))))
+     `(org-todo ((t (:foreground ,glacier-green))))
 
 
      `(speed-type-correct ((t (:foreground ,glacier-ice-))))

@@ -9,7 +9,7 @@
   (interactive)
   (delete-other-windows)
   (message "frame width: %d\n" (frame-width))
-  (let ((max-window-width 90))
+  (let ((max-window-width 100))
     (dotimes (i (- (/ (frame-width) max-window-width) 1))
       (split-window-horizontally)))
   (balance-windows))
@@ -33,6 +33,7 @@
     output))
 
 (defun law-compilation-mode-hook ()
+  (local-set-key (kbd "h") nil)
   (setq truncate-lines nil) ;; automatically becomes buffer local
   (set (make-local-variable 'truncate-partial-width-windows) nil))
 
@@ -93,12 +94,17 @@
   (setq comment-start "//")
   (setq comment-end "")
   (c-set-offset 'case-label '+)
+  (c-set-offset 'access-label 0)
   (c-set-offset 'arglist-intro '+)
   (c-set-offset 'label '+)
   (c-set-offset 'statement-cont 0)
   (c-set-offset 'inline-open 0)
   ;; (c-set-offset 'cpp-macro 0)
   (c-set-offset 'arglist-close 0))
+
+(defun law-fix-shell-script-mode ()
+  (interactive)
+  (local-set-key (kbd "C-c C-c") #'compile))
 
 (defface font-lock-operator-face
   '((t (:foreground "blue")))

@@ -164,7 +164,7 @@
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

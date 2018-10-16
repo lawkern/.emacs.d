@@ -42,7 +42,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 
-(setq font-lock-maximum-decoration t)
+(setq font-lock-maximum-decoration 3)
 
 (setq c-default-style "linux" c-basic-offset 2)
 (setq c-basic-offset 2)
@@ -56,6 +56,9 @@
 (setq css-indent-offset 2)
 
 (setq org-export-dispatch-use-expert-ui 1)
+
+;; M-x shell should affect the currently-active window
+(push (cons "\\*shell\\*" display-buffer--same-window-action) display-buffer-alist)
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -73,6 +76,7 @@
 (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'shell-script-mode-hook 'law-fix-shell-script-mode)
 
 (set-frame-parameter nil 'scroll-bar-background nil)
 (windmove-default-keybindings)
@@ -85,18 +89,22 @@
 
 (set-variable 'grep-command "grep -irHn ")
 
-(setq law-font "monospace")
+(setq law-font
+      (cond ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-11")
+            ((member "Fira Code" (font-family-list)) "Fira Code-11")
+            ((member "ProggyCleanTTSZ" (font-family-list)) "ProggyCleanTTSZ-16")
+            ((member "Source Code Pro" (font-family-list)) "Source Code Pro-10")
+            ((member "Meslo LG M" (font-family-list)) "Meslo LG M-12")
+            (t "monospace")))
+
+(setq line-spacing nil)
+(set-frame-font law-font nil)
+(add-to-list 'default-frame-alist `(font . ,law-font))
 
 (when law-win32
   (setq compile-command "build.bat")
-  ;; (setq law-font "Source Code Pro-9")
-  (setq law-font "Essential PragmataPro-9")
-  (setq line-spacing 3)
   (setq python-shell-interpreter "c:\\python27\\python.exe")
   (setq exec-path (append exec-path '("H:\\node\\;C:\\NASM\\")))
-  ;; (setq law-font "ProggyCleanTTSZ-16")
-  ;; (setq law-font "Source Code Pro Semibold-10")
-  ;; (setq law-font "Meslo LG M-12")
   (set-variable 'grep-command "findstr -s -n -i -l ")
   (setenv "PATH" (concat "c:\\node\\;c:\\NASM\\;" (getenv "PATH"))))
 
@@ -117,9 +125,6 @@
   (setq compile-command "sh build.sh")
   (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
-  ;; (setq law-font "Source Code Pro-12")
-  (setq law-font "Essential PragmataPro-12")
-  (setq line-spacing 3)
   (setq mac-command-key-is-meta t
         exec-path (append exec-path '("/usr/local/bin"))
         inferior-lisp-program "/applications/lang/cmucl/bin/lisp"
@@ -136,9 +141,6 @@
           (sbcl ("sbcl"))))
 
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/Library/TeX/texbin")))
-
-(set-frame-font law-font nil)
-(add-to-list 'default-frame-alist `(font . ,law-font))
 
 (when law-work-code-style
   (add-hook 'js2-mode-hook 'law-fix-js-for-work)
@@ -191,7 +193,7 @@
            ("\\<\\(IMPORTANT\\)" 1 'font-lock-important t))))
       law-modes)
 
-;; bury *scratch* buffer instead of kill it
+;; bury *scratch* buffer instead of killing it
 (defadvice kill-buffer (around kill-buffer-around-advice activate)
   (let ((buffer-to-kill (ad-get-arg 0)))
     (if (equal buffer-to-kill "*scratch*")
