@@ -9,19 +9,18 @@
 (dolist (k '([mouse-1] [down-mouse-1] [drag-mouse-1] [double-mouse-1] [triple-mouse-1]))
   (global-unset-key k))
 
-(defvar law-bind-mode-map (make-sparse-keymap)
-  "Keymap for 'law-bind-mode'.")
+(defvar law-mode-map (make-sparse-keymap)
+  "Keymap for 'law-mode'.")
 
-;; (define-key law-bind-mode-map (kbd "C-<right>") #'other-window)
-;; (define-key law-bind-mode-map (kbd "C-<left>") #'prev-window)
-;; (define-key law-bind-mode-map (kbd "M-<right>") 'next-buffer)
-;; (define-key law-bind-mode-map (kbd "M-<left>") 'previous-buffer)
+;; (define-key law-mode-map (kbd "C-<right>") #'other-window)
+;; (define-key law-mode-map (kbd "C-<left>") #'prev-window)
+;; (define-key law-mode-map (kbd "M-<right>") 'next-buffer)
+;; (define-key law-mode-map (kbd "M-<left>") 'previous-buffer)
 
-(define-key law-bind-mode-map (kbd "M-h") 'windmove-left)
-(define-key law-bind-mode-map (kbd "M-j") 'windmove-down)
-(define-key law-bind-mode-map (kbd "M-k") 'windmove-up)
-(define-key law-bind-mode-map (kbd "M-l") 'windmove-right)
-
+(define-key law-mode-map (kbd "M-h") 'windmove-left)
+(define-key law-mode-map (kbd "M-j") 'windmove-down)
+(define-key law-mode-map (kbd "M-k") 'windmove-up)
+(define-key law-mode-map (kbd "M-l") 'windmove-right)
 
 (defun prev-window () (interactive) (other-window -1))
 
@@ -34,37 +33,35 @@
 
 (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
 
-;;JS
-
 ;;Editing
-(define-key law-bind-mode-map (kbd "C-;") 'execute-extended-command)
-(define-key law-bind-mode-map (kbd "C-c l") "λ")
-(define-key law-bind-mode-map (kbd "C-c r") 'query-replace)
-(define-key law-bind-mode-map (kbd "C-c s") 'ff-find-other-file)
-(define-key law-bind-mode-map (kbd "C-c c") 'compile)
-(define-key law-bind-mode-map (kbd "C-c e") 'eval-buffer)
-(define-key law-bind-mode-map (kbd "C-c C-f") 'find-file-other-window)
+(define-key law-mode-map (kbd "C-;") 'execute-extended-command)
+(define-key law-mode-map (kbd "C-c l") "λ")
+(define-key law-mode-map (kbd "C-c r") 'query-replace)
+(define-key law-mode-map (kbd "C-c s") 'ff-find-other-file)
+(define-key law-mode-map (kbd "C-c c") 'compile)
+(define-key law-mode-map (kbd "C-c e") 'eval-buffer)
+(define-key law-mode-map (kbd "C-c C-f") 'find-file-other-window)
 
-(define-key law-bind-mode-map (kbd "C-c i") 'hs-hide-block)
-(define-key law-bind-mode-map (kbd "C-c o") 'hs-show-block)
-(define-key law-bind-mode-map (kbd "C-c C-i") 'hs-hide-all)
-(define-key law-bind-mode-map (kbd "C-c C-o") 'hs-show-all)
+(define-key law-mode-map (kbd "C-c i") 'hs-hide-block)
+(define-key law-mode-map (kbd "C-c o") 'hs-show-block)
+(define-key law-mode-map (kbd "C-c C-i") 'hs-hide-all)
+(define-key law-mode-map (kbd "C-c C-o") 'hs-show-all)
 
 
-(define-minor-mode law-bind-mode
+(define-minor-mode law-mode
   "A minor mode so that my key settings override major modes."
   :init-value t
-  :lighter " law-bind-mode"
-  :keymap law-bind-mode-map)
+  :lighter " law-mode"
+  :keymap law-mode-map)
 
-(define-globalized-minor-mode global-law-bind-mode law-bind-mode law-bind-mode)
+(define-globalized-minor-mode global-law-mode law-mode law-mode)
 
-(add-to-list 'emulation-mode-map-alists `((law-bind-mode . ,law-bind-mode-map)))
+(add-to-list 'emulation-mode-map-alists `((law-mode . ,law-mode-map)))
 
 
-(defun turn-off-law-bind-mode ()
-  "Turn off law-bind-mode."
-  (law-bind-mode -1))
-(add-hook 'minibuffer-setup-hook #'turn-off-law-bind-mode)
+(defun turn-off-law-mode ()
+  "Turn off law-mode."
+  (law-mode -1))
+(add-hook 'minibuffer-setup-hook #'turn-off-law-mode)
 
 (provide 'law-mode)

@@ -12,7 +12,7 @@
   (require 'law-mode)
   (require 'law-mode-line)
 
-  (require 'cfml-mode)
+  ;; (require 'cfml-mode)
 
   (load-theme 'glacier t nil)
 
@@ -33,16 +33,19 @@
 
   (require 'use-package)
 
+  (use-package diminish :ensure t)
+
   (use-package evil
     :ensure
     :init
     (setq evil-toggle-key "")
-    (setq evil-want-minibuffer t)
+    (setq evil-want-minibuffer nil)
     :config
     (evil-mode 1))
 
   (use-package paredit
     :ensure
+    :diminish paredit-mode
     :bind (("RET" . law-electrify-return-if-match))
     :hook ((emacs-lisp-mode lisp-mode clojure-mode
                             lisp-interaction-mode scheme-mode)
@@ -52,6 +55,7 @@
 
   (use-package eldoc
     :ensure
+    :diminish eldoc-mode
     :config
     (eldoc-mode)
     (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
@@ -78,7 +82,6 @@
     :init
     (ivy-mode 1))
 
-
   ;; Used for smooth scrolling
   ;; (use-package sublimity
   ;;   :ensure
@@ -98,6 +101,7 @@
     (setq tuareg-indent-align-with-first-arg t))
 
   (use-package highlight-numbers :ensure :defer t)
+
 
   (defface visible-mark-active
     '((t (:foreground green :underline "green"))) "")
@@ -121,6 +125,10 @@
   (use-package geiser :ensure :defer t
     :hook (scheme-mode . geiser-mode))
 
+  (use-package markdown-mode :defer t
+    :init
+    (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
+
   (use-package ox-reveal :ensure :defer t
     :init (setq org-reveal-title-slide nil))
 
@@ -129,23 +137,29 @@
   (autoload 'adaptive-wrap "adaptive-wrap" nil t)
   (autoload 'run-js "js-comint" "JS Repl" t)
 
+  (add-to-list 'auto-mode-alist '("\\.metal\\'" . c++-mode))
+
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-hook 'c-mode-common-hook 'law-fix-c-mode)
   (add-hook 'js2-mode-hook 'law-fix-c-mode)
-  (add-hook 'prog-mode-hook #'hs-minor-mode)
+  ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-  (when (equal (frame-parameter nil 'fullscreen) nil)
-    (toggle-frame-fullscreen))
+  ;; (when (equal (frame-parameter nil 'fullscreen) nil)
+  ;;   (toggle-frame-fullscreen))
 
   ;; NOTE(law): this only works if emacs _starts_ in fullscreen (aka use -mm flag)
-  (law-split-window)
-  )
+  (law-split-window))
 
 ;; Keep these out the let to prevent them from stacking up on evals
 (eval-after-load 'autoinsert law-c-source-template)
 (eval-after-load 'autoinsert law-c-header-template)
 (eval-after-load 'autoinsert law-d-module-template)
+
+(diminish 'law-mode)
+(diminish 'undo-tree-mode)
+(diminish 'hs-minor-mode)
+(diminish 'abbrev-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -156,16 +170,17 @@
    (quote
     ("45f945caaeaa81a400d5b9b0232550185a91e4130db3af4a9c259399acf2b98f" default)))
  '(evil-insert-state-cursor (quote ((bar . 3) "#6ee2ff")) t)
- '(evil-motion-state-cursor (quote (box "#f448f4")) t)
+ '(evil-motion-state-cursor (quote (box "#6ee2ff")) t)
  '(evil-normal-state-cursor (quote (box "#6ee2ff")) t)
- '(evil-operator-state-cursor (quote (box "#f448f4")) t)
- '(evil-replace-state-cursor (quote (box "#f448f4")) t)
+ '(evil-operator-state-cursor (quote (box "#f76ed5")) t)
+ '(evil-replace-state-cursor (quote (box "#f76ed5")) t)
  '(evil-visual-state-cursor (quote (box "#27f1bf")) t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

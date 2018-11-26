@@ -28,7 +28,8 @@
           (glacier-yellow "#c9ff94")
           (glacier-green "#27f1bf")
           (glacier-red+ "#f99ff9")
-          (glacier-red "#f556cd")
+          (glacier-red "#f76ed5")
+
 
           (glacier-fg (if (eq variant 'light) glacier-ice glacier-ice))
           (glacier-bg (if (eq variant 'light) glacier-ice+ glacier-shadow))
@@ -55,8 +56,8 @@
 
      ;; Builtin
      `(default ((t (:foreground ,glacier-fg :background ,glacier-bg))))
-     `(link ((t (:foreground ,glacier-ice+ :underline t))))
-     `(link-visited ((t (:foreground ,glacier-ice- :underline t))))
+     `(link ((t (:foreground ,glacier-blue+ :underline t))))
+     `(link-visited ((t (:foreground ,glacier-blue- :underline t))))
      `(info-menu-star ((t (:foreground ,glacier-red))))
 
      `(cursor ((t (:background ,glacier-cursor))))
@@ -71,14 +72,14 @@
 
      `(show-paren-match ((t (:foreground ,glacier-green :weight bold))))
      `(success ((t (:foreground ,glacier-blue+ :weight bold))))
-     `(warning ((t (:foreground ,glacier-red+))))
+     `(warning ((t (:foreground ,glacier-ice+))))
      `(error ((t (:foreground ,glacier-red))))
      `(minibuffer-prompt ((default (:foreground ,glacier-ice+))))
      `(region ((t (:foreground nil :background nil :distant-foreground nil))))
      `(highlight ((t (:foreground ,glacier-green :background ,glacier-shadow+))))
      `(tooltip ((t (:foreground ,glacier-ice :background ,glacier-shadow))))
-     `(border ((t (:foreground ,glacier-red :background ,glacier-shadow :color ,glacier-red))))
-     `(vertical-border ((t (:foreground ,glacier-ice-))))
+     `(border ((t (:foreground ,glacier-red :background ,glacier-red :color ,glacier-red))))
+     `(vertical-border ((t (:foreground ,glacier-shadow+))))
      `(isearch ((t (:foreground ,glacier-shadow+ :background ,glacier-green))))
      `(isearch-fail ((t (:foreground ,glacier-red :background nil))))
      `(lazy-highlight ((t (:foreground ,glacier-ice+ :background ,glacier-ice-))))
@@ -90,7 +91,8 @@
      `(font-lock-comment-face ((t (:foreground ,glacier-ice-))))
      `(font-lock-function-name-face ((t (:foreground ,glacier-ice))))
      `(font-lock-keyword-face ((t (:foreground ,glacier-blue+))))
-     `(font-lock-string-face ((t (:foreground ,glacier-ice+))))
+     `(font-lock-string-face ((t (:foreground ,glacier-blue+))))
+     `(font-lock-doc-face ((t (:foreground ,glacier-ice-))))
      `(font-lock-variable-name-face ((t (:foreground ,glacier-ice))))
      `(font-lock-constant-face ((t (:foreground ,glacier-ice))))
      `(font-lock-type-face ((t (:foreground ,glacier-blue+))))
@@ -98,7 +100,7 @@
      `(font-lock-negation-char-face ((t (:foreground ,glacier-blue+))))
      `(font-lock-warning-face ((t (:foreground ,glacier-red))))
 
-     `(highlight-numbers-number ((t (:foreground ,glacier-ice+))))
+     `(highlight-numbers-number ((t (:foreground ,glacier-blue+))))
 
      ;; Custom Font-lock
      `(font-lock-operator-face ((t (:foreground ,glacier-ice+))))
@@ -108,15 +110,17 @@
 
      ;; Modeline
      `(mode-line ((t (:box (:line-width 2 :color ,glacier-mode-line-bg :style nil)
-                           :height 0.9 :foreground ,glacier-mode-line-fg
+                           :height 0.9 :foreground ,glacier-ice+
                            :background ,glacier-mode-line-bg))))
 
      `(mode-line-inactive ((t (:box (:line-width 2 :color ,glacier-bg :style nil)
-                                    :height 0.9 :foreground ,glacier-fg
+                                    :height 0.9 :foreground ,glacier-ice-
                                     :background ,glacier-bg))))
 
      `(mode-line-path ((t (:foreground ,glacier-ice-))))
-     `(mode-line-buffer-name ((t (:foreground ,glacier-ice+))))
+
+     `(mode-line-buffer ((t (:foreground ,glacier-ice+ :weight bold))))
+
      `(mode-line-read-only ((t (:foreground ,glacier-ice-))))
      `(mode-line-highlight ((t (:foreground ,glacier-blue+))))
      `(mode-line-warning ((t (:foreground ,glacier-red))))
@@ -132,8 +136,11 @@
      `(apropos-variable-button ((t (:foreground ,glacier-blue+ :underline t))))
      `(apropos-plist-button ((t (:foreground ,glacier-blue+ :underline t))))
 
-     `(compilation-info ((t (:foreground ,glacier-ice+ :weight bold))))
+     `(compilation-info ((t (:foreground ,glacier-blue+ :weight bold))))
      `(compilation-line-number ((t (:foreground ,glacier-blue+))))
+     `(compilation-mode-line-exit ((t (:foreground ,glacier-ice+ :weight bold))))
+
+
 
      `(comint-highlight-input ((default (:foreground ,glacier-ice-))))
      `(comint-highlight-prompt ((default (:foreground ,glacier-ice+))))

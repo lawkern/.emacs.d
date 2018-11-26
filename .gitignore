@@ -9,6 +9,7 @@
 .projectile
 .dir-locals.el
 .org-id-locations
+.DS_Store
 
 flycheck_*.el
 dist/

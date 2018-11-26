@@ -64,8 +64,10 @@
 
 ;; (key-chord-mode 1)
 (show-paren-mode 1)
-(abbrev-mode 1)
+;; (abbrev-mode 1)
 (auto-insert-mode t)
+(column-number-mode)
+;; (global-undo-tree-mode nil)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -74,9 +76,9 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'c-mode-common-hook 'law-fix-c-mode)
 (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
-(add-hook 'prog-mode-hook #'hs-minor-mode)
+;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(add-hook 'shell-script-mode-hook 'law-fix-shell-script-mode)
+(add-hook 'shell-script-mode-hook #'law-fix-shell-script-mode)
 
 (set-frame-parameter nil 'scroll-bar-background nil)
 (windmove-default-keybindings)
