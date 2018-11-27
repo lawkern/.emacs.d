@@ -30,7 +30,6 @@
           (glacier-red+ "#f99ff9")
           (glacier-red "#f76ed5")
 
-
           (glacier-fg (if (eq variant 'light) glacier-ice glacier-ice))
           (glacier-bg (if (eq variant 'light) glacier-ice+ glacier-shadow))
           (glacier-hl (if (eq variant 'light) glacier-ice++ glacier-shadow-))
@@ -129,7 +128,6 @@
      `(mode-line-visual ((t (:foreground ,glacier-visual))))
      `(mode-line-operator ((t (:foreground ,glacier-red))))
 
-
      `(apropos-symbol ((t (:foreground ,glacier-ice+ :weight bold))))
      `(apropos-function-button ((t (:foreground ,glacier-blue+ :underline t))))
      `(apropos-user-option-button ((t (:foreground ,glacier-blue+ :underline t))))
@@ -139,8 +137,6 @@
      `(compilation-info ((t (:foreground ,glacier-blue+ :weight bold))))
      `(compilation-line-number ((t (:foreground ,glacier-blue+))))
      `(compilation-mode-line-exit ((t (:foreground ,glacier-ice+ :weight bold))))
-
-
 
      `(comint-highlight-input ((default (:foreground ,glacier-ice-))))
      `(comint-highlight-prompt ((default (:foreground ,glacier-ice+))))
@@ -152,6 +148,8 @@
      `(ido-incomplete-regexp ((t (:foreground ,glacier-red))))
 
      `(ivy-current-match ((t (:foreground ,glacier-blue+ :background nil))))
+     `(ivy-match-required-face ((t (:foreground ,glacier-red :background nil))))
+     `(ivy-confirm-face ((t (:foreground ,glacier-blue+ :background nil))))
      `(ivy-highlight ((t (:foreground ,glacier-blue+ :background nil))))
      `(ivy-action ((t (:foreground ,glacier-ice :background nil))))
      `(ivy-virtual ((t (:foreground ,glacier-ice :background nil))))
@@ -202,7 +200,6 @@
      `(org-document-info ((t (:foreground ,glacier-ice+))))
      `(org-latex-and-related ((t (:foreground ,glacier-ice+))))
      `(org-todo ((t (:foreground ,glacier-green))))
-
 
      `(speed-type-correct ((t (:foreground ,glacier-ice-))))
      `(speed-type-mistake ((t (:foreground ,glacier-red :underline t))))

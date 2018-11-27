@@ -1,4 +1,9 @@
 (let ((file-name-handler-alist nil)) ; NOTE(law): Speed hack by excluding initial regexes
+  (setq law-osx    (eq system-type 'darwin)
+        law-win32  (eq system-type 'windows-nt)
+        law-cygwin (eq system-type 'cygwin)
+        law-linux  (eq system-type 'gnu/linux))
+
   (defun law-create-emacs-path (dirName)
     (concat user-emacs-directory
             (convert-standard-filename dirName)))
