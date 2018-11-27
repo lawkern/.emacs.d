@@ -16,6 +16,7 @@
   (require 'law-lib)
   (require 'law-mode)
   (require 'law-mode-line)
+  ;; (require 'law-adv-mode-line)
 
   ;; (require 'cfml-mode)
 
