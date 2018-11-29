@@ -17,8 +17,9 @@
   (require 'law-mode)
   (require 'law-mode-line)
   ;; (require 'law-adv-mode-line)
-
   ;; (require 'cfml-mode)
+
+  (global-law-mode)
 
   (load-theme 'glacier t nil)
 

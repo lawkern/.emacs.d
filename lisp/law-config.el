@@ -8,10 +8,6 @@
 
 (setq law-work-code-style nil)
 
-(setq law-modes '(c-mode d-mode c++-mode objc-mode emacs-lisp-mode lisp-mode
-                         scheme-mode html-mode nxml-mode js-mode js2-mode
-                         ruby-mode))
-
 ;; (setq initial-scratch-message ";; Lisp *scratch* Buffer\n\n")
 (setq truncate-partial-width-windows t)
 (setq ad-redefinition-action 'accept)
@@ -171,30 +167,6 @@
         (tab-mark 9 [8594 9] [92 9])))
 
 ;; (setq fixme-modes '(law-mode))
-(defface font-lock-note
-  '((t (:foreground "green" :underline t)))
-  "NOTE comment highlighting"
-  :group 'basic-faces)
-
-(defface font-lock-todo
-  '((t (:foreground "red" :underline t)))
-  "TODO comment highlighting"
-  :group 'basic-faces)
-
-(defface font-lock-important
-  '((t (:foreground "yellow" :underline t)))
-  "IMPORTANT comment highlighting"
-  :group 'basic-faces)
-
-(mapc (lambda (mode)
-        (font-lock-add-keywords
-         mode
-         '(("\\<\\(λ\\)" 1 'font-lock-constant-face t)
-           ("\\<\\(NOTE\\)" 1 'font-lock-note t)
-           ("\\<\\(TODO\\)" 1 'font-lock-todo t)
-           ("\\<\\(IMPORTANT\\)" 1 'font-lock-important t))))
-      law-modes)
-
 ;; bury *scratch* buffer instead of killing it
 (defadvice kill-buffer (around kill-buffer-around-advice activate)
   (let ((buffer-to-kill (ad-get-arg 0)))
