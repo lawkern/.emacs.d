@@ -91,8 +91,8 @@
 
 (defun law--fix-c-indentation ()
   (setq comment-style 'indent)
-  (setq comment-start "/*")
-  (setq comment-end "*/")
+  (setq comment-start "//")
+  (setq comment-end "")
   (c-set-offset 'case-label '+)
   ;; (c-set-offset 'access-label 0)
   (c-set-offset 'arglist-intro '+)
@@ -102,8 +102,7 @@
   ;; (c-set-offset 'cpp-macro 0)
   (c-set-offset 'arglist-close 0))
 
-(defun law-fix-shell-script-mode ()
-  (interactive)
+(defun law-fix-sh-mode ()
   (local-set-key (kbd "C-c C-c") #'compile))
 
 (defface font-lock-operator-face
@@ -180,9 +179,10 @@
       '(define-auto-insert
          '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\|c\\|m\\)\\'" . "C/C++ skeleton")
          '(nil
-           "///////////////////////////////////////////////////////////////////////////////////\n"
-           "// (c) copyright " (format-time-string "%Y") " Lawrence D. Kern\n"
-           "//\n\n"
+           "/*/////////////////////////////////////////////////////////////////////////////*/\n"
+           "/* (c) copyright " (format-time-string "%Y")
+           " Lawrence D. Kern ////////////////////////////////////////*/\n"
+           "/*/////////////////////////////////////////////////////////////////////////////*/\n\n"
            _)))
 
 (setq law-c-header-template
@@ -192,9 +192,10 @@
            "#if !defined("
            (upcase (file-name-nondirectory (file-name-sans-extension buffer-file-name)))
            "_H)\n"
-           "///////////////////////////////////////////////////////////////////////////////////\n"
-           "// (c) copyright " (format-time-string "%Y") " Lawrence D. Kern\n"
-           "//\n\n"
+           "/*/////////////////////////////////////////////////////////////////////////////*/\n"
+           "/* (c) copyright " (format-time-string "%Y")
+           " Lawrence D. Kern ////////////////////////////////////////*/\n"
+           "/*/////////////////////////////////////////////////////////////////////////////*/\n\n"
            _ "\n\n"
            "#define " (upcase (file-name-nondirectory (file-name-sans-extension buffer-file-name))) "_H\n"
            "#endif")))

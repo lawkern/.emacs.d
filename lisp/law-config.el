@@ -38,9 +38,11 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 
+(setq same-window-regexps '("."))
+
 (setq font-lock-maximum-decoration 3)
 
-(setq c-default-style "linux" c-basic-offset 2)
+(setq c-default-style "linux")
 (setq c-basic-offset 2)
 (setq cperl-indent-level 2)
 
@@ -74,7 +76,7 @@
 (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
 ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(add-hook 'shell-script-mode-hook #'law-fix-shell-script-mode)
+(add-hook 'sh-mode-hook #'law-fix-sh-mode)
 
 (set-frame-parameter nil 'scroll-bar-background nil)
 (windmove-default-keybindings)
