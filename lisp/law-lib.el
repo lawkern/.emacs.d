@@ -4,6 +4,17 @@
 
 ;; Author: Lawrence D. Kern
 
+(defun law-switch-to-minibuffer-window ()
+  "Switch to minibuffer window (if active)"
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-frame-set-input-focus (window-frame (active-minibuffer-window)))
+    (select-window (active-minibuffer-window))))
+
+(defun prev-window ()
+  (interactive)
+  (other-window -1))
+
 (defun law-split-window ()
   "Split the frame horizontally based on the frame's width."
   (interactive)
@@ -67,6 +78,40 @@
       (set-buffer-modified-p nil)
       t)))
 
+(defface font-lock-note
+  '((t (:foreground "green" :underline t)))
+  "NOTE comment highlighting"
+  :group 'basic-faces)
+
+(defface font-lock-todo
+  '((t (:foreground "red" :underline t)))
+  "TODO comment highlighting"
+  :group 'basic-faces)
+
+(defface font-lock-important
+  '((t (:foreground "yellow" :underline t)))
+  "IMPORTANT comment highlighting"
+  :group 'basic-faces)
+
+(setq law-comment-keywords
+      '(("\\<\\(λ\\)" 1 'font-lock-constant-face t)
+        ("\\<\\(NOTE\\)" 1 'font-lock-note t)
+        ("\\<\\(TODO\\)" 1 'font-lock-todo t)
+        ("\\<\\(IMPORTANT\\)" 1 'font-lock-important t)))
+
+(defun law-add-comment-keywords ()
+  ;; (if (bound-and-true-p law-mode)
+  ;;    (font-lock-add-keywords nil law-mode-keywords)
+  ;;  (font-lock-remove-keywords nil law-mode-keywords))
+
+  ;; (if (fboundp 'font-lock-flush)
+  ;;    (font-lock-flush)
+  ;;  (when font-lock-mode
+  ;;    (with-no-warnings (font-lock-fontify-buffer))))
+
+  (font-lock-add-keywords nil law-comment-keywords))
+
+
 (defvar law-electrify-return-match "[\]}\)\"]")
 
 (defun law-electrify-return-if-match (arg)
@@ -77,19 +122,30 @@
     (newline arg)
     (indent-according-to-mode)))
 
+(defun law-insert-c-separator ()
+  "Add a source code separator using a C-style comment."
+  (interactive)
+  (insert "\n/*")
+  (insert-char ?/ (- fill-column 3))
+  (insert "*/\n"))
+
 ;; Mode Fixes
+
 (defun law-fix-c-mode ()
   ;; nil
   (interactive)
   ;; (hs-minor-mode)
   (law--fix-c-indentation)
   (local-set-key (kbd "C-c C-c") #'compile)
-  ;; (law--fix-c-font-lock)
+  (local-set-key (kbd "C-c -") #'law-insert-c-separator)
+  (law--fix-c-font-lock)
   ;; (local-set-key (kbd "RET") 'law-electrify-return-if-match)
-  (highlight-numbers-mode)
+  ;; (highlight-numbers-mode)
   (message "c-mode was fixed\n"))
 
 (defun law--fix-c-indentation ()
+  (setq c-default-style "linux")
+  (setq c-basic-offset 3)
   (setq comment-style 'indent)
   (setq comment-start "//")
   (setq comment-end "")
@@ -98,6 +154,7 @@
   (c-set-offset 'arglist-intro '+)
   (c-set-offset 'label '+)
   (c-set-offset 'statement-cont 0)
+  (c-set-offset 'substatement-open 0)
   (c-set-offset 'inline-open 0)
   ;; (c-set-offset 'cpp-macro 0)
   (c-set-offset 'arglist-close 0))
@@ -112,20 +169,23 @@
 
 ;; (setq law-c-types '("u8 u16 u32 u64 s8 s16 s32 s64 b32 r32 r64"))
 ;; (setq law-c-builtin '("global_variable" "local_persist" "internal"))
-;; (setq law-c-operators '("===" "=="  "+=" "-=" "->" "--" "++"
-;;                         "*" "/" "~" "&" "|" "%" "+" "-"
-;;                         "<" ">" "." "=" "," ";" "[" "]" "(" ")"))
+(setq law-c-operators '("==" "!="
+                        ;; "===" "+=" "-=" "->" "--" "++"
+                        ;; "*" "/" "~" "&" "|" "%" "+" "-"
+                        ;; "<" ">" "." "=" "," ";" "[" "]" "(" ")"
+                        ))
 
 ;; (setq law-c-types-regex (regexp-opt law-c-types))
 ;; (setq law-c-builtin-regex (regexp-opt law-c-builtin 'words))
-;; (setq law-c-operators-regex (regexp-opt law-c-operators))
+(setq law-c-operators-regex (regexp-opt law-c-operators))
 
-;; (defun law--fix-c-font-lock ()
-;;   (font-lock-add-keywords
-;;    nil
-;;    `((,law-c-operators-regex . 'font-lock-operator-face)
-;;      (,law-c-types-regex . 'font-lock-type-face)
-;;      (,law-c-builtin-regex . 'font-lock-builtin-face))))
+(defun law--fix-c-font-lock ()
+  (font-lock-add-keywords
+   nil
+   `((,law-c-operators-regex . 'font-lock-operator-face)
+     ;; (,law-c-types-regex . 'font-lock-type-face)
+     ;; (,law-c-builtin-regex . 'font-lock-builtin-face)
+     )))
 
 ;; (defun law--add-c-keywords ()
 ;;   (font-lock-add-keywords

@@ -14,12 +14,8 @@
 
   (require 'law-config)
   (require 'law-lib)
-  (require 'law-mode)
   (require 'law-mode-line)
   ;; (require 'law-adv-mode-line)
-  ;; (require 'cfml-mode)
-
-  (global-law-mode)
 
   (load-theme 'glacier t nil)
 
@@ -73,7 +69,7 @@
     :ensure
     :hook (paredit-mode . evil-paredit-mode))
 
-  (use-package ivy :ensure :defer t
+  (use-package ivy :ensure
     :diminish ivy-mode
     :bind (:map ivy-minibuffer-map
                 ("C-h" . "DEL")
@@ -83,13 +79,14 @@
                 ("RET" . ivy-alt-done))
     :config
     (setq ivy-use-virtual-buffers t)
+    (setq ivy-height 25)
     (setq ivy-count-format "(%d/%d) ")
     (setq ivy-extra-directories nil)
 
     :init
     (ivy-mode 1))
 
-  ;; Used for smooth scrolling
+  ;; Used for smooth scrolling:
   ;; (use-package sublimity
   ;;   :ensure
   ;;   :config
@@ -113,8 +110,8 @@
   (defface visible-mark-active
     '((t (:foreground green :underline "green"))) "")
 
-  (use-package visible-mark :ensure :defer t
-    :init (global-visible-mark-mode 1))
+  ;; (use-package visible-mark :ensure :defer t
+    ;; :init (global-visible-mark-mode 1))
 
   (use-package js2-mode :ensure :defer t
     :init
@@ -139,18 +136,67 @@
   (use-package ox-reveal :ensure :defer t
     :init (setq org-reveal-title-slide nil))
 
+  (use-package rust-mode :ensure :defer t)
+
+  (use-package slack :defer t
+    :commands (slack-start)
+    :init
+    (setq slack-buffer-emojify nil)
+    (setq slack-prefer-current-team t)
+    :config
+
+    (when (file-exists-p "~/.emacs.d/lisp/law-slack.el")
+      (load "~/.emacs.d/lisp/law-slack.el"))
+
+    (evil-define-key 'normal slack-info-mode-map
+      ",u" 'slack-room-update-messages)
+
+    (evil-define-key 'normal slack-mode-map
+      ",c" 'slack-buffer-kill
+      ",ra" 'slack-message-add-reaction
+      ",rr" 'slack-message-remove-reaction
+      ",rs" 'slack-message-show-reaction-users
+      ",pl" 'slack-room-pins-list
+      ",pa" 'slack-message-pins-add
+      ",pr" 'slack-message-pins-remove
+      ",mm" 'slack-message-write-another-buffer
+      ",me" 'slack-message-edit
+      ",md" 'slack-message-delete
+      ",u" 'slack-room-update-messages
+      ",2" 'slack-message-embed-mention
+      ",3" 'slack-message-embed-channel
+      "\C-n" 'slack-buffer-goto-next-message
+      "\C-p" 'slack-buffer-goto-prev-message)
+
+    (evil-define-key 'normal slack-edit-message-mode-map
+      ",k" 'slack-message-cancel-edit
+      ",s" 'slack-message-send-from-buffer
+      ",2" 'slack-message-embed-mention
+      ",3" 'slack-message-embed-channel))
+
+
   (autoload 'key-chord-mode "key-chord")
   (autoload 'rainbow-mode "rainbow-mode" "Color current buffer" t)
   (autoload 'adaptive-wrap "adaptive-wrap" nil t)
   (autoload 'run-js "js-comint" "JS Repl" t)
 
   (add-to-list 'auto-mode-alist '("\\.metal\\'" . c++-mode))
+  (add-to-list 'auto-mode-alist '("\\.cfm\\'" . html-mode))
+  (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js-mode))
 
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-hook 'c-mode-common-hook 'law-fix-c-mode)
+  (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
   (add-hook 'js2-mode-hook 'law-fix-c-mode)
-  ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
+  (add-hook 'rust-mode-hook 'law-fix-c-mode)
+  (add-hook 'prog-mode-hook #'hs-minor-mode)
+  (add-hook 'prog-mode-hook 'law-add-comment-keywords)
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+  (add-hook 'sh-mode-hook #'law-fix-sh-mode)
+
+  (diminish 'undo-tree-mode)
+  (diminish 'hs-minor-mode)
+  (diminish 'abbrev-mode)
 
   ;; (when (equal (frame-parameter nil 'fullscreen) nil)
   ;;   (toggle-frame-fullscreen))
@@ -162,11 +208,6 @@
 (eval-after-load 'autoinsert law-c-source-template)
 (eval-after-load 'autoinsert law-c-header-template)
 (eval-after-load 'autoinsert law-d-module-template)
-
-(diminish 'law-mode)
-(diminish 'undo-tree-mode)
-(diminish 'hs-minor-mode)
-(diminish 'abbrev-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -185,7 +226,7 @@
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (slack rust-mode diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 
 (custom-set-faces

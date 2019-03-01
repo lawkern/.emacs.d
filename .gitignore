@@ -13,6 +13,8 @@
 
 flycheck_*.el
 dist/
+speed-type/
+url/
 network-security.data
 recentf
 auto-save-list
@@ -21,6 +23,7 @@ tramp
 \#*\#
 .\#*
 
+/lisp/law-slack.el
 /eshell/history
 /eshell/lastdir
 /elpa/

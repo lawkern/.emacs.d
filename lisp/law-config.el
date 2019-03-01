@@ -21,6 +21,7 @@
 (setq scroll-conservatively 10000)
 (setq scroll-preserve-screen-position t)
 ;;(setq hscroll-step 1)
+(setq gdb-many-windows t)
 (setq gdb-show-main t)
 (setq compilation-skip-threshold 1)
 (setq compilation-context-lines 0)
@@ -31,29 +32,23 @@
 (setq split-width-threshold 0)
 (setq split-height-threshold nil)
 (setq show-paren-delay 0)
-(setq gc-cons-threshold 100000000)
+(setq gc-cons-threshold 1600000)
 (setq use-package-always-ensure t)
+;; (setq same-window-regexps '("."))
+(setq same-window-regexps nil)
+(setq font-lock-maximum-decoration 1)
+(setq org-export-dispatch-use-expert-ui 1)
+
+(setq cperl-indent-level 2)
+(setq javascript-indent-level 2)
+(setq js-indent-level 2)
+(setq js-switch-indent-offset 2)
+(setq js2-indent-level 2)
+(setq css-indent-offset 2)
 
 (setq-default fill-column 80)
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-
-(setq same-window-regexps '("."))
-
-(setq font-lock-maximum-decoration 3)
-
-(setq c-default-style "linux")
-(setq c-basic-offset 2)
-(setq cperl-indent-level 2)
-
-(setq javascript-indent-level 2)
-(setq js-indent-level 2)
-(setq js2-indent-level 2)
-(setq js-switch-indent-offset 2)
-
-(setq css-indent-offset 2)
-
-(setq org-export-dispatch-use-expert-ui 1)
+(setq-default tab-width 8)
 
 ;; M-x shell should affect the currently-active window
 (push (cons "\\*shell\\*" display-buffer--same-window-action) display-buffer-alist)
@@ -70,18 +65,11 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'c-mode-common-hook 'law-fix-c-mode)
-(add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
-;; (add-hook 'prog-mode-hook #'hs-minor-mode)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(add-hook 'sh-mode-hook #'law-fix-sh-mode)
+(tooltip-mode -1)
+(global-hl-line-mode -1)
 
 (set-frame-parameter nil 'scroll-bar-background nil)
 (windmove-default-keybindings)
-(global-hl-line-mode -1)
-(tooltip-mode -1)
 
 (set-default 'truncate-lines t)
 (set 'gdb-use-separate-io-buffer nil)
@@ -89,13 +77,42 @@
 
 (set-variable 'grep-command "grep -irHn ")
 
+(global-set-key (kbd "C-;") 'execute-extended-command)
+(global-set-key (kbd "C-c l") "λ")
+(global-set-key (kbd "C-c r") 'query-replace)
+(global-set-key (kbd "C-c s") 'ff-find-other-file)
+(global-set-key (kbd "C-c c") 'compile)
+(global-set-key (kbd "C-c e") 'eval-buffer)
+(global-set-key (kbd "C-c f") 'find-file-other-window)
+
+(global-set-key (kbd "C-c i") 'hs-hide-block)
+(global-set-key (kbd "C-c o") 'hs-show-block)
+(global-set-key (kbd "C-c h") 'hs-hide-all)
+(global-set-key (kbd "C-c o") 'hs-show-all)
+
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+(global-set-key (kbd "C-z") nil)
+(global-set-key (kbd "C-x C-z") nil)
+
+(global-set-key (kbd "M-h") 'windmove-left)
+(global-set-key (kbd "M-j") 'windmove-down)
+(global-set-key (kbd "M-k") 'windmove-up)
+(global-set-key (kbd "M-l") 'windmove-right)
+
+(global-set-key (kbd "<f7>") 'law-switch-to-minibuffer-window)
+
 (setq law-font
-      (cond ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-11")
-            ((member "Fira Code" (font-family-list)) "Fira Code-11")
-            ((member "ProggyCleanTTSZ" (font-family-list)) "ProggyCleanTTSZ-16")
-            ((member "Source Code Pro" (font-family-list)) "Source Code Pro-10")
-            ((member "Meslo LG M" (font-family-list)) "Meslo LG M-12")
-            (t "monospace")))
+      (cond
+       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-11")
+       ((member "Px437 ATI 8x16" (font-family-list)) "Px437 ATI 8x16-16")
+       ((member "Px437 ATI 8x8-2y" (font-family-list)) "Px437 ATI 8x8-2y-12")
+       ((member "Input" (font-family-list)) "Input-11")
+       ((member "Fira Code" (font-family-list)) "Fira Code-11")
+       ((member "ProggyCleanTTSZ" (font-family-list)) "ProggyCleanTTSZ-16")
+       ((member "Source Code Pro" (font-family-list)) "Source Code Pro-10")
+       ((member "Meslo LG M" (font-family-list)) "Meslo LG M-12")
+       (t "monospace")))
 
 (setq line-spacing nil)
 (set-frame-font law-font nil)
@@ -126,7 +143,7 @@
   (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
   (setq mac-command-key-is-meta t
-        exec-path (append exec-path '("/usr/local/bin"))
+        exec-path (append exec-path '("/usr/local/bin:/Users/law/.cargo/bin"))
         inferior-lisp-program "/applications/lang/cmucl/bin/lisp"
         geiser-racket-binary "/applications/lang/racket/bin/racket"
         slime-contribs '(slime-fancy))
@@ -135,12 +152,16 @@
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (setq ns-use-proxy-icon  nil)
   (setq frame-title-format nil)
+  (setq ns-use-native-fullscreen nil)
+
 
   (setq slime-lisp-implementations
         '((cmucl ("/applications/lang/cmucl/bin/lisp"))
           (sbcl ("sbcl"))))
 
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/Library/TeX/texbin")))
+  (setenv "PATH"
+          (concat (getenv "PATH")
+                  ":/usr/local/bin:/Users/law/.cargo/bin:/Library/TeX/texbin")))
 
 (when law-work-code-style
   (add-hook 'js2-mode-hook 'law-fix-js-for-work)
