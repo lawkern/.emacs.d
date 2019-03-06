@@ -87,7 +87,7 @@
      `(font-lock-constant-face      ((t (:inherit default))))
      `(font-lock-type-face          ((t (:inherit default))))
      `(font-lock-preprocessor-face  ((t (:inherit default))))
-     `(font-lock-negation-char-face ((t (:inherit default))))
+     `(font-lock-negation-char-face ((t (:foreground ,blue))))
      `(font-lock-warning-face       ((t (:inherit default))))
      `(font-lock-comment-face       ((t (:foreground ,ice-))))
      `(font-lock-doc-face           ((t (:inherit font-lock-comment-face))))
@@ -175,6 +175,9 @@
      `(tuareg-font-lock-error-face              ((t (:foreground ,yellow :background ,red))))
      `(tuareg-font-lock-module-face             ((t (:foreground ,ice))))
 
+     `(elixir-attribute-face ((t (:inherit default))))
+     `(elixir-atom-face      ((t (:foreground ,blue))))
+
      `(web-mode-html-tag-face         ((t (:foreground ,ice+))))
      `(web-mode-html-tag-bracket-face ((t (:foreground ,ice))))
      `(web-mode-html-attr-name-face   ((t (:foreground ,ice))))
@@ -218,15 +221,7 @@
     (custom-theme-set-variables
      'glacier
 
-  ;;   0        default            default
-  ;;   1        bold               bold
-  ;;   2        faint              default
-  ;;   3        italic             italic
-  ;;   4        underlined         underline
-  ;;   5        slowly blinking    success
-  ;;   6        rapidly blinking   warning
-  ;;   7        negative image     error
-
+     `(ansi-color-names-vector '[,shadow ,red ,green ,yellow ,blue+ ,red+ ,blue ,ice+])
      `(evil-normal-state-cursor   '(box ,glacier-cursor))
      `(evil-insert-state-cursor   '((bar . 3) ,glacier-insert))
      `(evil-visual-state-cursor   '(box ,glacier-visual))
