@@ -169,7 +169,7 @@
 
 ;; (setq law-c-types '("u8 u16 u32 u64 s8 s16 s32 s64 b32 r32 r64"))
 ;; (setq law-c-builtin '("global_variable" "local_persist" "internal"))
-(setq law-c-operators '("==" "!="
+(setq law-c-operators '("===" "!==" "==" "!="
                         ;; "===" "+=" "-=" "->" "--" "++"
                         ;; "*" "/" "~" "&" "|" "%" "+" "-"
                         ;; "<" ">" "." "=" "," ";" "[" "]" "(" ")"
