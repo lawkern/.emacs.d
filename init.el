@@ -117,8 +117,8 @@
     :init
     (setq js2-mode-show-parse-errors nil)
     (setq js2-mode-show-strict-warnings nil)
-    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js2-mode))
+    ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+    ;; (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js2-mode))
 
     :bind (("\C-x\C-e" . js-send-last-sexp)
            ("\C-\M-x"  . js-send-last-sexp-and-go)
@@ -189,14 +189,14 @@
   (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
   (add-hook 'js2-mode-hook 'law-fix-c-mode)
   (add-hook 'rust-mode-hook 'law-fix-c-mode)
-  (add-hook 'prog-mode-hook #'hs-minor-mode)
   (add-hook 'prog-mode-hook 'law-add-comment-keywords)
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (add-hook 'sh-mode-hook #'law-fix-sh-mode)
+  (add-hook 'prog-mode-hook #'hs-minor-mode)
 
   (diminish 'undo-tree-mode)
-  (diminish 'hs-minor-mode)
   (diminish 'abbrev-mode)
+  (diminish 'hs-minor-mode)
 
   ;; (when (equal (frame-parameter nil 'fullscreen) nil)
   ;;   (toggle-frame-fullscreen))
@@ -226,7 +226,7 @@
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (slack rust-mode diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (elixir-mode slack rust-mode diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 
 (custom-set-faces
