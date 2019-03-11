@@ -176,7 +176,7 @@
      `(tuareg-font-lock-module-face             ((t (:foreground ,ice))))
 
      `(elixir-attribute-face ((t (:inherit default))))
-     `(elixir-atom-face      ((t (:foreground ,blue))))
+     `(elixir-atom-face      ((t (:foreground ,ice+))))
 
      `(web-mode-html-tag-face         ((t (:foreground ,ice+))))
      `(web-mode-html-tag-bracket-face ((t (:foreground ,ice))))
@@ -193,8 +193,8 @@
      `(outline-5 ((t (:foreground ,ice))))
      `(outline-6 ((t (:foreground ,ice+))))
 
-     `(org-todo                  ((t (:inherit font-lock-todo))))
-     `(org-done                  ((t (:inherit font-lock-note))))
+     `(org-todo                  ((t (:foreground ,red))))
+     `(org-done                  ((t (:foreground ,green))))
      `(org-document-info-keyword ((t (:foreground ,ice-))))
      `(org-document-title        ((t (:foreground ,blue))))
      `(org-document-info         ((t (:foreground ,ice+))))
