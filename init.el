@@ -133,9 +133,6 @@
     :init
     (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
 
-  (use-package ox-reveal :ensure :defer t
-    :init (setq org-reveal-title-slide nil))
-
   (use-package rust-mode :ensure :defer t)
 
   (use-package slack :defer t
@@ -192,11 +189,19 @@
   (add-hook 'prog-mode-hook 'law-add-comment-keywords)
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (add-hook 'sh-mode-hook #'law-fix-sh-mode)
-  (add-hook 'prog-mode-hook #'hs-minor-mode)
+
+  ;; NOTE(law): I think evil mode reactivates hs-minor-mode, so it still shows
+  ;; in the modeline despite diminish. Added to the prog-mode hook for now.
+
+  (add-hook 'prog-mode-hook #'law-activate-diminished-hs)
+  (defun law-activate-diminished-hs ()
+    (hs-minor-mode)
+    (diminish 'hs-minor-mode))
 
   (diminish 'undo-tree-mode)
   (diminish 'abbrev-mode)
-  (diminish 'hs-minor-mode)
+
+  ;; (eval-after-load "hs" '(diminish 'hs-minor-mode))
 
   ;; (when (equal (frame-parameter nil 'fullscreen) nil)
   ;;   (toggle-frame-fullscreen))
@@ -226,7 +231,10 @@
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (elixir-mode slack rust-mode diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (erlang elixir-mode slack rust-mode diminish markdown-mode swift-mode
+            pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess
+            typing use-package speed-type slime rainbow-mode key-chord js2-mode
+            js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 
 (custom-set-faces
