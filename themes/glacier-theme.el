@@ -57,6 +57,21 @@
      `(shadow  ((t (:foreground ,ice+))))
      `(italic  ((t (:underline nil :slant italic))))
 
+     `(line-number ((t (:foreground ,shadow+))))
+     `(line-number-current-line ((t (:foreground ,ice-))))
+
+     `(widget-field ((t (:background ,shadow+))))
+
+     `(custom-state ((t (:foreground ,green))))
+     `(custom-group-tag ((t (:inherit variable-pitch :foreground ,blue :height 1.2 :weight bold))))
+     `(custom-button ((t (:box (:line-width 3 :style released-button)
+                               :foreground ,ice+ :background ,shadow+))))
+
+
+     `(breakpoint-disabled ((t (:foreground ,yellow))))
+     `(breakpoint-enabled ((t (:foreground ,red :weight bold))))
+
+
      `(whitespace-space   ((t (:foreground ,shadow-))))
      `(whitespace-tab     ((t (:inherit whitespace-space))))
      `(whitespace-newline ((t (:inherit whitespace-space))))
@@ -82,7 +97,7 @@
      `(font-lock-builtin-face       ((t (:inherit default))))
      `(font-lock-function-name-face ((t (:foreground ,blue :weight normal))))
      `(font-lock-keyword-face       ((t (:inherit default))))
-     `(font-lock-string-face        ((t (:inherit default :foreground ,ice+))))
+     `(font-lock-string-face        ((t (:foreground ,blue))))
      `(font-lock-variable-name-face ((t (:inherit default))))
      `(font-lock-constant-face      ((t (:inherit default))))
      `(font-lock-type-face          ((t (:inherit default))))
@@ -119,6 +134,8 @@
      `(mode-line-normal    ((t (:foreground ,glacier-normal))))
      `(mode-line-visual    ((t (:foreground ,glacier-visual))))
      `(mode-line-operator  ((t (:foreground ,red))))
+
+     `(header-line  ((t (:inherit mode-line :weight bold))))
 
      `(apropos-symbol             ((t (:foreground ,ice+ :weight bold))))
      `(apropos-function-button    ((t (:foreground ,blue :underline t))))
