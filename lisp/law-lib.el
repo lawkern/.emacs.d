@@ -212,20 +212,27 @@
 
      ;; struct/union/enum declarations:
      ("^\\b\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)"
-      (1 font-lock-keyword-face)
-      (2 font-lock-type-face))
+      (1 font-lock-keyword-face) ;; struct/enum/union
+      (2 font-lock-type-face)) ;; tag
 
      ;; struct/union/enum typedefs:
-     ("^\\b\\(?:typedef\\s-+\\)\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[^\}]*\}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)"
-      (1 font-lock-keyword-face)
-      (2 font-lock-type-face)
-      (3 font-lock-type-face))
+     ("^\\b\\(?:typedef\\s-+\\)\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[^\;}]*\}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
+      (1 font-lock-keyword-face) ;; struct/enum/union
+      (2 font-lock-type-face) ;; tag
+      (3 font-lock-type-face)) ;; type
+
+     ;; Preprocessor function:
+     ("^#define\\s-+\\([_a-zA-Z][_a-zA-Z0-9\*]*\\)\\(\(\\)[^\)]*\\(\)\\)"
+      (1 font-lock-function-name-face) ;; function name
+      (2 font-lock-function-name-face) ;; open paren
+      (3 font-lock-function-name-face)) ;; close paren
 
      ;; Function definition/prototype:
-     ("^\\(?:\\b\\|#\\)\\(?:[_a-zA-Z][_a-zA-Z0-9]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
-      (1 font-lock-function-name-face)
-      (2 font-lock-function-name-face)
-      (3 font-lock-function-name-face))))
+     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\{]*\\(\)\\)"
+      (1 font-lock-function-name-face) ;; function name
+      (2 font-lock-function-name-face) ;; open paren
+      (3 font-lock-function-name-face))) ;; close paren
+)
 
   (message "c-mode was fixed\n"))
 
