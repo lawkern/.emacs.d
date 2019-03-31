@@ -22,14 +22,21 @@
           (shadow- "#101822")
 
           (blue+ "#b3edff")
+          ;; (blue+ "#7a8ab8")
           (blue "#6ee2ff")
-          (blue- "#24748f")
+          (blue- "#54a7be")
+          ;; (blue- "#24748f")
           ;; (blue- "#0086b3")
 
           (yellow "#c9ff94")
+
+          (green+ "#59a6a6")
           (green "#27f1bf")
+          (green- "#054848")
+
           (red+ "#fab7fa")
           (red "#f76ed5")
+          (red- "#610561")
 
           (glacier-cursor blue)
 
@@ -54,7 +61,7 @@
      `(hl-line ((t (:background ,shadow-))))
      `(linum   ((t (:foreground ,ice-))))
      `(fringe  ((t (:background ,shadow))))
-     `(shadow  ((t (:foreground ,ice+))))
+     `(shadow  ((t (:foreground ,ice-))))
      `(italic  ((t (:underline nil :slant italic))))
 
      `(line-number ((t (:foreground ,shadow+))))
@@ -67,10 +74,8 @@
      `(custom-button ((t (:box (:line-width 3 :style released-button)
                                :foreground ,ice+ :background ,shadow+))))
 
-
      `(breakpoint-disabled ((t (:foreground ,yellow))))
      `(breakpoint-enabled ((t (:foreground ,red :weight bold))))
-
 
      `(whitespace-space   ((t (:foreground ,shadow-))))
      `(whitespace-tab     ((t (:inherit whitespace-space))))
@@ -85,6 +90,7 @@
      `(border          ((t (:foreground ,red :background ,red :color ,red))))
      `(vertical-border ((t (:foreground ,shadow+))))
 
+     `(match             ((t (:foreground ,green :weight bold))))
      `(isearch           ((t (:foreground ,shadow+ :background ,green :weight bold))))
      `(isearch-fail      ((t (:foreground ,red))))
      `(lazy-highlight    ((t (:foreground ,green :weight bold))))
@@ -97,12 +103,12 @@
      `(font-lock-builtin-face       ((t (:inherit default))))
      `(font-lock-function-name-face ((t (:foreground ,blue :weight normal))))
      `(font-lock-keyword-face       ((t (:inherit default))))
-     `(font-lock-string-face        ((t (:foreground ,blue))))
+     `(font-lock-string-face        ((t (:foreground ,blue-))))
      `(font-lock-variable-name-face ((t (:inherit default))))
      `(font-lock-constant-face      ((t (:inherit default))))
-     `(font-lock-type-face          ((t (:inherit default))))
+     `(font-lock-type-face          ((t (:inherit default :foreground ,blue))))
      `(font-lock-preprocessor-face  ((t (:inherit default))))
-     `(font-lock-negation-char-face ((t (:foreground ,blue))))
+     `(font-lock-negation-char-face ((t (:foreground ,red))))
      `(font-lock-warning-face       ((t (:inherit default))))
      `(font-lock-comment-face       ((t (:foreground ,ice-))))
      `(font-lock-doc-face           ((t (:inherit font-lock-comment-face))))
@@ -171,6 +177,27 @@
      `(ivy-minibuffer-match-face-3 ((t (:foreground ,ice+))))
      `(ivy-minibuffer-match-face-4 ((t (:foreground ,ice+))))
 
+     `(magit-section-heading   ((t (:foreground ,blue :weight bold))))
+     `(magit-section-highlight ((t (:background nil))))
+     `(magit-hash              ((t (:foreground ,ice-))))
+     `(magit-branch-remote     ((t (:foreground ,blue))))
+     `(magit-branch-local      ((t (:foreground ,ice+))))
+
+     `(magit-diff-added   ((t (:foreground ,green :background nil))))
+     `(magit-diff-removed ((t (:foreground ,red :background nil))))
+     `(magit-diff-context ((t (:foreground ,ice))))
+     `(magit-diff-hunk-heading ((t (:foreground ,ice+ :background nil :weight bold))))
+
+     `(magit-diff-added-highlight   ((t (:inherit magit-diff-added :background ,green-))))
+     `(magit-diff-removed-highlight ((t (:foreground ,red+ :background ,red-))))
+     `(magit-diff-context-highlight ((t (:foreground ,ice+ :background ,shadow+))))
+     `(magit-diff-hunk-heading-highlight ((t (:inherit magit-diff-hunk-heading :background ,shadow+))))
+
+
+
+     ;; magit-diff-hunk-heading-highlight
+     ;; `(magit-diff-context-highlight ((t (:foreground ,ice- :background ,shadow+))))
+
      `(font-latex-warning-face      ((t (:foreground ,ice+))))
      `(font-latex-bold-face         ((t (:foreground ,ice-))))
      `(font-latex-sectioning-5-face ((t (:foreground ,blue :height 1.0))))
@@ -209,6 +236,19 @@
      `(outline-4 ((t (:foreground ,ice+))))
      `(outline-5 ((t (:foreground ,ice))))
      `(outline-6 ((t (:foreground ,ice+))))
+
+     `(rainbow-delimiters-base-face ((t (:foreground ,blue))))
+     `(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-3-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-4-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-5-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-6-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-7-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face))))
+     `(rainbow-delimiters-depth-9-face ((t (:inherit rainbow-delimiters-base-face))))
+
 
      `(org-todo                  ((t (:foreground ,red))))
      `(org-done                  ((t (:foreground ,green))))
