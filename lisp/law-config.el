@@ -8,6 +8,18 @@
 
 (setq law-work-code-style nil)
 
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(tooltip-mode -1)
+(global-hl-line-mode -1)
+
+(show-paren-mode 1)
+(auto-insert-mode t)
+(column-number-mode)
+;; (abbrev-mode 1)
+;; (global-undo-tree-mode nil)
+
 ;; (setq initial-scratch-message ";; Lisp *scratch* Buffer\n\n")
 (setq truncate-partial-width-windows t)
 (setq ad-redefinition-action 'accept)
@@ -21,7 +33,7 @@
 (setq scroll-conservatively 10000)
 (setq scroll-preserve-screen-position t)
 ;;(setq hscroll-step 1)
-(setq gdb-many-windows t)
+(setq gdb-many-windows nil)
 (setq gdb-show-main t)
 (setq compilation-skip-threshold 1)
 (setq compilation-context-lines 0)
@@ -37,6 +49,7 @@
 ;; (setq same-window-regexps '("."))
 (setq same-window-regexps nil)
 (setq font-lock-maximum-decoration 1)
+;; (setq font-lock-maximum-decoration '((c-mode . l) (c++-mode . 1) (t . t)))
 (setq org-export-dispatch-use-expert-ui 1)
 
 (setq cperl-indent-level 2)
@@ -55,27 +68,17 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; (key-chord-mode 1)
-(show-paren-mode 1)
-;; (abbrev-mode 1)
-(auto-insert-mode t)
-(column-number-mode)
-;; (global-undo-tree-mode nil)
-
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(tooltip-mode -1)
-(global-hl-line-mode -1)
-
 (set-frame-parameter nil 'scroll-bar-background nil)
 (windmove-default-keybindings)
 
 (set-default 'truncate-lines t)
 (set 'gdb-use-separate-io-buffer nil)
-(set-fringe-mode 3)
+;; (fringe-mode nil)
 
 (set-variable 'grep-command "grep -irHn ")
+
+(global-set-key (kbd "C-z") nil)
+(global-set-key (kbd "C-x C-z") nil)
 
 (global-set-key (kbd "C-;") 'execute-extended-command)
 (global-set-key (kbd "C-c l") "λ")
@@ -85,26 +88,24 @@
 (global-set-key (kbd "C-c e") 'eval-buffer)
 (global-set-key (kbd "C-c f") 'find-file-other-window)
 
-(global-set-key (kbd "C-c i") 'hs-hide-block)
-(global-set-key (kbd "C-c o") 'hs-show-block)
-(global-set-key (kbd "C-c h") 'hs-hide-all)
-(global-set-key (kbd "C-c o") 'hs-show-all)
+;; (global-set-key (kbd "C-c i") 'hs-hide-block)
+;; (global-set-key (kbd "C-c o") 'hs-show-block)
+;; (global-set-key (kbd "C-c h") 'hs-hide-all)
+;; (global-set-key (kbd "C-c o") 'hs-show-all)
 
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
-(global-set-key (kbd "C-z") nil)
-(global-set-key (kbd "C-x C-z") nil)
+(global-set-key (kbd "C-c g") 'magit-status)
+(global-set-key (kbd "C-c M-g") 'magit-dispatch-popup)
 
-(global-set-key (kbd "M-h") 'windmove-left)
-(global-set-key (kbd "M-j") 'windmove-down)
-(global-set-key (kbd "M-k") 'windmove-up)
-(global-set-key (kbd "M-l") 'windmove-right)
+(global-set-key (kbd "C-c h") 'windmove-left)
+(global-set-key (kbd "C-c j") 'windmove-down)
+(global-set-key (kbd "C-c k") 'windmove-up)
+(global-set-key (kbd "C-c l") 'windmove-right)
 
 (global-set-key (kbd "<f7>") 'law-switch-to-minibuffer-window)
 
 (setq law-font
       (cond
-       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-11")
+       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-9")
        ((member "Px437 ATI 8x16" (font-family-list)) "Px437 ATI 8x16-16")
        ((member "Px437 ATI 8x8-2y" (font-family-list)) "Px437 ATI 8x8-2y-12")
        ((member "Input" (font-family-list)) "Input-11")
@@ -120,10 +121,10 @@
 
 (when law-win32
   (setq compile-command "build.bat")
-  (setq python-shell-interpreter "c:\\python27\\python.exe")
-  (setq exec-path (append exec-path '("H:\\node\\;C:\\NASM\\")))
-  (set-variable 'grep-command "findstr -s -n -i -l ")
-  (setenv "PATH" (concat "c:\\node\\;c:\\NASM\\;" (getenv "PATH"))))
+  (setq python-shell-interpreter "c:\\Python\\python.exe")
+  (setq exec-path (append exec-path '("C:\\Python\\;")))
+  ;; (setenv "PATH" (concat "c:\\Cygwin64\\bin;" (getenv "PATH")))
+  (set-variable 'grep-command "findstr -s -n -i -l "))
 
 (when law-cygwin
   (setq compile-command "build.bat")
