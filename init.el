@@ -4,9 +4,9 @@
         law-cygwin (eq system-type 'cygwin)
         law-linux  (eq system-type 'gnu/linux))
 
-  (defun law-create-emacs-path (dirName)
+  (defun law-create-emacs-path (dir-name)
     (concat user-emacs-directory
-            (convert-standard-filename dirName)))
+            (convert-standard-filename dir-name)))
 
   (add-to-list 'load-path (law-create-emacs-path "lisp/"))
   (add-to-list 'load-path (law-create-emacs-path "themes/"))
@@ -20,11 +20,13 @@
   (load-theme 'glacier t nil)
 
   (setq package-archives
-        '(("gnu"       . "http://elpa.gnu.org/packages/")
-          ("original"  . "http://tromey.com/elpa/")
-          ("org"       . "http://orgmode.org/elpa/")
-          ("marmalade" . "http://marmalade-repo.org/packages/")
-          ("melpa"     . "http://melpa.org/packages/")))
+        '(
+          ("melpa-stable" . "https://melpa.org/packages/")
+          ("melpa"        . "https://stable.melpa.org/packages/")
+          ;; ("gnu"          . "https://elpa.gnu.org/packages/")
+          ;; ("original"     . "http://tromey.com/elpa/")
+          ("marmalade"    . "http://marmalade-repo.org/packages/")
+          ("org"          . "http://orgmode.org/elpa/")))
 
   (package-initialize)
 
@@ -46,8 +48,10 @@
     :config
     (evil-mode 1))
 
-  (use-package paredit
-    :ensure
+  (use-package magit :ensure)
+  (use-package evil-magit :ensure)
+
+  (use-package paredit :ensure
     :diminish paredit-mode
     :bind (("RET" . law-electrify-return-if-match))
     :hook ((emacs-lisp-mode lisp-mode clojure-mode
@@ -56,8 +60,7 @@
     :config
     (paredit-mode t))
 
-  (use-package eldoc
-    :ensure
+  (use-package eldoc :ensure
     :diminish eldoc-mode
     :config
     (eldoc-mode)
@@ -65,8 +68,7 @@
     (eldoc-add-command 'paredit-backward-delete 'paredit-close-round)
     (eldoc-add-command 'law-electrify-return-if-match))
 
-  (use-package evil-paredit
-    :ensure
+  (use-package evil-paredit :ensure
     :hook (paredit-mode . evil-paredit-mode))
 
   (use-package ivy :ensure
@@ -104,27 +106,26 @@
     ;; (setq tuareg-prettify-symbols-full t)
     (setq tuareg-indent-align-with-first-arg t))
 
-  (use-package highlight-numbers :ensure :defer t)
+  (use-package highlight-numbers :ensure)
 
-
-  (defface visible-mark-active
-    '((t (:foreground green :underline "green"))) "")
+  ;; (defface visible-mark-active
+  ;;   '((t (:foreground green :underline "green"))) "")
 
   ;; (use-package visible-mark :ensure :defer t
     ;; :init (global-visible-mark-mode 1))
 
-  (use-package js2-mode :ensure :defer t
-    :init
-    (setq js2-mode-show-parse-errors nil)
-    (setq js2-mode-show-strict-warnings nil)
-    ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    ;; (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js2-mode))
+  ;; (use-package js2-mode :ensure :defer t
+  ;;   :init
+  ;;   (setq js2-mode-show-parse-errors nil)
+  ;;   (setq js2-mode-show-strict-warnings nil)
+  ;;   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  ;;   (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js2-mode))
 
-    :bind (("\C-x\C-e" . js-send-last-sexp)
-           ("\C-\M-x"  . js-send-last-sexp-and-go)
-           ("\C-cb"    . js-send-buffer)
-           ("\C-c\C-b" . js-send-buffer-and-go)
-           ("\C-cl"    . js-load-file-and-go)))
+  ;;   :bind (("\C-x\C-e" . js-send-last-sexp)
+  ;;          ("\C-\M-x"  . js-send-last-sexp-and-go)
+  ;;          ("\C-cb"    . js-send-buffer)
+  ;;          ("\C-c\C-b" . js-send-buffer-and-go)
+  ;;          ("\C-cl"    . js-load-file-and-go)))
 
   (use-package geiser :ensure :defer t
     :hook (scheme-mode . geiser-mode))
@@ -140,8 +141,8 @@
     :init
     (setq slack-buffer-emojify nil)
     (setq slack-prefer-current-team t)
-    :config
 
+    :config
     (when (file-exists-p "~/.emacs.d/lisp/law-slack.el")
       (load "~/.emacs.d/lisp/law-slack.el"))
 
@@ -171,6 +172,9 @@
       ",2" 'slack-message-embed-mention
       ",3" 'slack-message-embed-channel))
 
+  ;; (use-package rainbow-delimiters :ensure
+  ;;   :config
+  ;;   (rainbow-delimiters-mode 1))
 
   (autoload 'key-chord-mode "key-chord")
   (autoload 'rainbow-mode "rainbow-mode" "Color current buffer" t)
@@ -186,7 +190,7 @@
   (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
   (add-hook 'js2-mode-hook 'law-fix-c-mode)
   (add-hook 'rust-mode-hook 'law-fix-c-mode)
-  (add-hook 'prog-mode-hook 'law-add-comment-keywords)
+  (add-hook 'prog-mode-hook 'law-fix-prog-mode)
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (add-hook 'sh-mode-hook #'law-fix-sh-mode)
 
@@ -202,17 +206,15 @@
   (diminish 'abbrev-mode)
 
   ;; (eval-after-load "hs" '(diminish 'hs-minor-mode))
+  (eval-after-load 'autoinsert law-c-source-template)
+  (eval-after-load 'autoinsert law-c-header-template)
+  (eval-after-load 'autoinsert law-d-module-template)
 
   ;; (when (equal (frame-parameter nil 'fullscreen) nil)
   ;;   (toggle-frame-fullscreen))
 
   ;; NOTE(law): this only works if emacs _starts_ in fullscreen (aka use -mm flag)
   (law-split-window))
-
-;; Keep these out the let to prevent them from stacking up on evals
-(eval-after-load 'autoinsert law-c-source-template)
-(eval-after-load 'autoinsert law-c-header-template)
-(eval-after-load 'autoinsert law-d-module-template)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -228,13 +230,11 @@
  '(evil-operator-state-cursor (quote (box "#f76ed5")) t)
  '(evil-replace-state-cursor (quote (box "#f76ed5")) t)
  '(evil-visual-state-cursor (quote (box "#27f1bf")) t)
+ '(global-auto-revert-mode t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (erlang elixir-mode slack rust-mode diminish markdown-mode swift-mode
-            pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess
-            typing use-package speed-type slime rainbow-mode key-chord js2-mode
-            js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
+    (rainbow-delimiters modern-cpp-font-lock evil-magit magit erlang elixir-mode slack rust-mode diminish markdown-mode swift-mode ox-reveal pdf-tools tuareg d-mode sublimity highlight-numbers visible-mark ess typing use-package speed-type slime rainbow-mode key-chord js2-mode js-comint ivy geiser evil-paredit cider bongo auctex adaptive-wrap)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 
 (custom-set-faces
