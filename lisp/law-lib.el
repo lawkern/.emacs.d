@@ -99,7 +99,7 @@
         ("\\<\\(TODO\\)" 1 'font-lock-todo t)
         ("\\<\\(IMPORTANT\\)" 1 'font-lock-important t)))
 
-(defun law-add-comment-keywords ()
+(defun law-fix-prog-mode ()
   ;; (if (bound-and-true-p law-mode)
   ;;    (font-lock-add-keywords nil law-mode-keywords)
   ;;  (font-lock-remove-keywords nil law-mode-keywords))
@@ -109,8 +109,9 @@
   ;;  (when font-lock-mode
   ;;    (with-no-warnings (font-lock-fontify-buffer))))
 
-  (font-lock-add-keywords nil law-comment-keywords))
-
+  ;; (hs-minor-mode)
+  (font-lock-add-keywords nil law-comment-keywords)
+  (law-highlight-numbers))
 
 (defvar law-electrify-return-match "[\]}\)\"]")
 
@@ -131,19 +132,58 @@
 
 ;; Mode Fixes
 
-(defun law-fix-c-mode ()
-  ;; nil
-  (interactive)
-  ;; (hs-minor-mode)
-  (law--fix-c-indentation)
-  (local-set-key (kbd "C-c C-c") #'compile)
-  (local-set-key (kbd "C-c -") #'law-insert-c-separator)
-  (law--fix-c-font-lock)
-  ;; (local-set-key (kbd "RET") 'law-electrify-return-if-match)
-  ;; (highlight-numbers-mode)
-  (message "c-mode was fixed\n"))
+(defface font-lock-operator-face
+  '((t (:foreground "blue")))
+  "Basic face for operators."
+  :group 'basic-faces)
 
-(defun law--fix-c-indentation ()
+(setq law-c-types '("u8" "u16" "u32" "u64" "s8" "s16" "s32" "s64" "b32" "f32" "f64" "memSz"))
+(setq law-c-builtin '("global" "local" "unit"))
+(setq law-c-operators '("===" "!==" "==" "!="
+                        ;; "===" "+=" "-=" "->" "--" "++"
+                        ;; "*" "/" "~" "&" "|" "%" "+" "-"
+                        ;; "<" ">" "." "=" "," ";" "[" "]" "(" ")"
+                        ))
+
+(defun law-highlight-numbers ()
+
+  (font-lock-add-keywords
+   nil
+   `(
+     ;; Valid hex number (will highlight invalid suffix though)
+     ("\\b0x[[:xdigit:]]+[uUlL]*\\b" . font-lock-string-face)
+
+     ;; Invalid hex number
+     ("\\b0x\\(\\w\\|\\.\\)+\\b" . font-lock-warning-face)
+
+     ;; Valid floating point number.
+     ("\\(\\b[0-9]+\\|\\)\\(\\.\\)\\([0-9]+\\(e[-]?[0-9]+\\)?\\([lL]?\\|[dD]?[fF]?\\)\\)\\b"
+      (1 font-lock-string-face)
+      (3 font-lock-string-face))
+
+     ;; Invalid floating point number.  Must be before valid decimal.
+     ("\\b[0-9].*?\\..+?\\b" . font-lock-warning-face)
+
+     ;; Valid decimal number.  Must be before octal regexes otherwise 0 and 0l
+     ;; will be highlighted as errors.  Will highlight invalid suffix though.
+     ("\\b\\(\\(0\\|[1-9][0-9]*\\)[uUlL]*\\)\\b" 1 font-lock-string-face)
+
+     ;; Valid octal number
+     ("\\b0[0-7]+[uUlL]*\\b" . font-lock-string-face)
+
+     ;; Floating point number with no digits after the period.  This must be
+     ;; after the invalid numbers, otherwise it will "steal" some invalid
+     ;; numbers and highlight them as valid
+     ("\\b\\([0-9]+\\)\\." (1 font-lock-string-face))
+
+     ;; Invalid number.  Must be last so it only highlights anything not
+     ;; matched above.
+     ("\\b[0-9]\\(\\w\\|\\.\\)+?\\b" . font-lock-warning-face))))
+
+(defun law-fix-c-mode ()
+  (interactive)
+
+  ;; Indentation:
   (setq c-default-style "linux")
   (setq c-basic-offset 3)
   (setq comment-style 'indent)
@@ -157,75 +197,44 @@
   (c-set-offset 'substatement-open 0)
   (c-set-offset 'inline-open 0)
   ;; (c-set-offset 'cpp-macro 0)
-  (c-set-offset 'arglist-close 0))
+  (c-set-offset 'arglist-close 0)
 
-(defun law-fix-sh-mode ()
-  (local-set-key (kbd "C-c C-c") #'compile))
+  ;; Keys
+  (local-set-key (kbd "C-c C-c") 'compile)
+  (local-set-key (kbd "C-c -") 'law-insert-c-separator)
+  ;; (local-set-key (kbd "RET") 'law-electrify-return-if-match)
 
-(defface font-lock-operator-face
-  '((t (:foreground "blue")))
-  "Basic face for operators."
-  :group 'basic-faces)
-
-;; (setq law-c-types '("u8 u16 u32 u64 s8 s16 s32 s64 b32 r32 r64"))
-;; (setq law-c-builtin '("global_variable" "local_persist" "internal"))
-(setq law-c-operators '("===" "!==" "==" "!="
-                        ;; "===" "+=" "-=" "->" "--" "++"
-                        ;; "*" "/" "~" "&" "|" "%" "+" "-"
-                        ;; "<" ">" "." "=" "," ";" "[" "]" "(" ")"
-                        ))
-
-;; (setq law-c-types-regex (regexp-opt law-c-types))
-;; (setq law-c-builtin-regex (regexp-opt law-c-builtin 'words))
-(setq law-c-operators-regex (regexp-opt law-c-operators))
-
-(defun law--fix-c-font-lock ()
   (font-lock-add-keywords
    nil
    `((,law-c-operators-regex . 'font-lock-operator-face)
      ;; (,law-c-types-regex . 'font-lock-type-face)
-     ;; (,law-c-builtin-regex . 'font-lock-builtin-face)
-     )))
+     (,law-c-builtin-regex . 'font-lock-builtin-face)
 
-;; (defun law--add-c-keywords ()
-;;   (font-lock-add-keywords
-;;    nil
-;;    `((,law-c-builtin-regex 0 'font-lock-builtin-face)
+     ;; struct/union/enum declarations:
+     ("^\\b\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)"
+      (1 font-lock-keyword-face)
+      (2 font-lock-type-face))
 
-;;      ;; Valid hex number (will highlight invalid suffix though)
-;;      ("\\b0x[[:xdigit:]]+[uUlL]*\\b" . font-lock-string-face)
+     ;; struct/union/enum typedefs:
+     ("^\\b\\(?:typedef\\s-+\\)\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[^\}]*\}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)"
+      (1 font-lock-keyword-face)
+      (2 font-lock-type-face)
+      (3 font-lock-type-face))
 
-;;      ;; Invalid hex number
-;;      ("\\b0x\\(\\w\\|\\.\\)+\\b" . font-lock-warning-face)
+     ;; Function definition/prototype:
+     ("^\\(?:\\b\\|#\\)\\(?:[_a-zA-Z][_a-zA-Z0-9]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
+      (1 font-lock-function-name-face)
+      (2 font-lock-function-name-face)
+      (3 font-lock-function-name-face))))
 
-;;      ;; Valid floating point number.
-;;      ("\\(\\b[0-9]+\\|\\)\\(\\.\\)\\([0-9]+\\(e[-]?[0-9]+\\)?\\([lL]?\\|[dD]?[fF]?\\)\\)\\b"
-;;       (1 font-lock-string-face)
-;;       (3 font-lock-string-face))
+  (message "c-mode was fixed\n"))
 
-;;      ;; Invalid floating point number.  Must be before valid decimal.
-;;      ("\\b[0-9].*?\\..+?\\b" . font-lock-warning-face)
+(defun law-fix-sh-mode ()
+  (local-set-key (kbd "C-c C-c") 'compile))
 
-;;      ;; Valid decimal number.  Must be before octal regexes otherwise 0 and 0l
-;;      ;; will be highlighted as errors.  Will highlight invalid suffix though.
-;;      ("\\b\\(\\(0\\|[1-9][0-9]*\\)[uUlL]*\\)\\b" 1 font-lock-string-face)
-
-;;      ;; Valid octal number
-;;      ("\\b0[0-7]+[uUlL]*\\b" . font-lock-string-face)
-
-;;      ;; Floating point number with no digits after the period.  This must be
-;;      ;; after the invalid numbers, otherwise it will "steal" some invalid
-;;      ;; numbers and highlight them as valid
-;;      ("\\b\\([0-9]+\\)\\." (1 font-lock-string-face))
-
-;;      ;; Invalid number.  Must be last so it only highlights anything not
-;;      ;; matched above.
-;;      ("\\b[0-9]\\(\\w\\|\\.\\)+?\\b" . font-lock-warning-face)
-
-;;      ;; Function call
-;;      ;; ("\\(\\w+\\)\\s-*\(" (1 font-lock-function-name-face))
-
-;;      )))
+(setq law-c-types-regex (regexp-opt law-c-types 'words))
+(setq law-c-builtin-regex (regexp-opt law-c-builtin 'words))
+(setq law-c-operators-regex (regexp-opt law-c-operators))
 
 (defun law-fix-html-for-work ()
   (setq indent-tabs-mode t
