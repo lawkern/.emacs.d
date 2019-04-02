@@ -210,24 +210,30 @@
      ;; (,law-c-types-regex . 'font-lock-type-face)
      (,law-c-builtin-regex . 'font-lock-builtin-face)
 
-     ;; struct/union/enum declarations:
-     ("^\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[\n;]"
-      (1 font-lock-keyword-face) ;; struct/enum/union
-      (2 font-lock-type-face)) ;; tag
+     ;; struct Foo
+     ("^\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[\n;]"
+      (1 font-lock-type-face))
 
-     ;; struct/union/enum typedefs:
-     ("^typedef\\s-+\\(struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[^\;}]*\}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
-      (1 font-lock-keyword-face) ;; struct/enum/union
-      (2 font-lock-type-face) ;; tag
-      (3 font-lock-type-face)) ;; type
+     ;; typedef struct Foo Foo;
+     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
+      (1 font-lock-type-face)
+      (2 font-lock-type-face))
 
-     ;; Preprocessor function:
+     ;; typedef struct Foo
+     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)\n"
+      (1 font-lock-type-face))
+
+     ;; } Foo;
+     ("^}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
+      (1 font-lock-type-face))
+
+     ;; #define foo(a) ...
      ("^#define\\s-+\\([_a-zA-Z][_a-zA-Z0-9\*]*\\)\\(\(\\)[^\)]*\\(\)\\)"
       (1 font-lock-function-name-face) ;; function name
       (2 font-lock-function-name-face) ;; open paren
       (3 font-lock-function-name-face)) ;; close paren
 
-     ;; Function definition/prototype:
+     ;; static void foo (int a, int b)
      ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\{]*\\(\)\\)"
       (1 font-lock-function-name-face) ;; function name
       (2 font-lock-function-name-face) ;; open paren
@@ -243,12 +249,14 @@
 (setq law-c-operators-regex (regexp-opt law-c-operators))
 
 (defun law-fix-html-for-work ()
-  (setq indent-tabs-mode t
-        comment-start "<!---"
-        comment-end "--->"))
+  (setq indent-tabs-mode t)
+  (setq-default tab-width 2)
+  (setq comment-start "<!---")
+  (setq comment-end "--->"))
 
 (defun law-fix-js-for-work ()
-  (setq indent-tabs-mode t))
+  (setq indent-tabs-mode t)
+  (setq-default tab-width 2))
 
 (setq law-c-source-template
       '(define-auto-insert
