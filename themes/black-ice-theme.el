@@ -1,28 +1,28 @@
 (require 'glacier)
 
-(deftheme glacier "Light theme based on the Glacier GameBoy Advance")
+(deftheme black-ice "Dark theme based on the Glacier GameBoy Advance")
 
-(defun create-glacier-theme (variant)
+(defun create-black-ice-theme (variant)
   (glacier-with-colors variant
     (custom-theme-set-faces
-     'glacier
+     'black-ice
 
      ;; Builtin
-     `(default ((t (:foreground ,shadow :background ,ice++))))
+     `(default ((t (:foreground ,ice :background ,shadow))))
 
-     `(link           ((t (:foreground ,ice-- :underline t))))
+     `(link           ((t (:foreground ,ice++ :underline t))))
      `(link-visited   ((t (:foreground ,ice-- :underline t))))
      `(info-menu-star ((t (:foreground ,red))))
 
-     `(cursor  ((t (:background ,blue-))))
+     `(cursor  ((t (:background ,cursor))))
      `(hl-line ((t (:background ,shadow-))))
      `(linum   ((t (:foreground ,ice--))))
-     `(fringe  ((t (:background ,ice++))))
+     `(fringe  ((t (:background ,shadow))))
      `(shadow  ((t (:foreground ,ice--))))
      `(italic  ((t (:underline nil :slant italic))))
 
-     `(dired-header  ((t (:foreground ,shadow- :weight bold))))
-     `(dired-directory  ((t (:foreground ,ice--))))
+     `(dired-header  ((t (:foreground ,ice++ :weight bold))))
+     `(dired-directory  ((t (:foreground ,ice++))))
 
      `(line-number ((t (:foreground ,shadow+))))
      `(line-number-current-line ((t (:foreground ,ice--))))
@@ -44,7 +44,7 @@
      `(success         ((t (:foreground ,blue :weight bold))))
      `(warning         ((t (:inherit font-lock-warning-face))))
      `(error           ((t (:foreground ,red))))
-     `(region          ((t (:foreground nil :background ,ice+ :distant-foreground nil))))
+     `(region          ((t (:foreground nil :background ,shadow+ :distant-foreground nil))))
      `(highlight       ((t (:foreground ,green :background ,shadow+))))
      `(tooltip         ((t (:foreground ,ice :background ,shadow))))
      `(border          ((t (:foreground ,red :background ,red :color ,red))))
@@ -55,18 +55,18 @@
      `(isearch-fail      ((t (:foreground ,red))))
      `(lazy-highlight    ((t (:foreground ,green :weight bold))))
      `(show-paren-match  ((t (:foreground ,blue :weight bold))))
-     `(minibuffer-prompt ((default (:foreground ,shadow-))))
+     `(minibuffer-prompt ((default (:foreground ,ice++))))
 
      `(visible-mark-active ((t (:foreground ,ice :background ,ice--))))
 
      ;; Font-lock
      `(font-lock-builtin-face           ((t (:inherit default :foreground))))
-     `(font-lock-function-name-face     ((t (:foreground ,shadow- :weight bold))))
+     `(font-lock-function-name-face     ((t (:foreground ,blue :weight normal))))
      `(font-lock-keyword-face           ((t (:inherit default))))
-     `(font-lock-string-face            ((t (:foreground ,ice--))))
+     `(font-lock-string-face            ((t (:foreground ,blue-))))
      `(font-lock-variable-name-face     ((t (:inherit default))))
      `(font-lock-constant-face          ((t (:inherit default))))
-     `(font-lock-type-face              ((t (:inherit default :foreground ,shadow-))))
+     `(font-lock-type-face              ((t (:inherit default :foreground ,blue))))
      `(font-lock-preprocessor-face      ((t (:inherit default))))
      `(font-lock-negation-char-face     ((t (:foreground ,red))))
      `(font-lock-warning-face           ((t (:inherit default))))
@@ -77,19 +77,19 @@
      `(highlight-numbers-number ((t (:foreground ,blue))))
 
      ;; Custom Font-lock
-     `(font-lock-operator-face ((t (:foreground ,ice- :weight bold))))
+     `(font-lock-operator-face ((t (:foreground ,blue))))
      `(font-lock-todo          ((t (:inherit default :weight bold :underline t))))
      `(font-lock-important     ((t (:foreground ,yellow :weight bold :underline t))))
      `(font-lock-note          ((t (:inherit font-lock-comment-face :weight bold :underline t))))
 
      ;; Modeline
-     `(mode-line ((t (:box (:line-width 2 :color ,ice++ :style nil)
-                           :height 1.0 :foreground ,shadow-
-                           :background ,ice++))))
+     `(mode-line ((t (:box (:line-width 2 :color ,shadow :style nil)
+                           :height 1.0 :foreground ,ice++
+                           :background ,shadow))))
 
-     `(mode-line-inactive ((t (:box (:line-width 2 :color ,ice++ :style nil)
-                                    :height 1.0 :foreground ,ice-
-                                    :background ,ice++))))
+     `(mode-line-inactive ((t (:box (:line-width 2 :color ,shadow :style nil)
+                                    :height 1.0 :foreground ,ice--
+                                    :background ,shadow))))
 
      `(mode-line-path   ((t (:foreground ,ice--))))
      `(mode-line-buffer ((t (:foreground ,ice++ :weight bold))))
@@ -97,9 +97,9 @@
      `(mode-line-read-only ((t (:foreground ,ice--))))
      `(mode-line-highlight ((t (:foreground ,blue))))
      `(mode-line-warning   ((t (:foreground ,red+))))
-     `(mode-line-insert    ((t (:foreground ,blue))))
-     `(mode-line-normal    ((t (:foreground ,blue))))
-     `(mode-line-visual    ((t (:foreground ,green))))
+     `(mode-line-insert    ((t (:foreground ,insert))))
+     `(mode-line-normal    ((t (:foreground ,normal))))
+     `(mode-line-visual    ((t (:foreground ,visual))))
      `(mode-line-operator  ((t (:foreground ,red))))
 
      `(header-line  ((t (:inherit mode-line :weight bold))))
@@ -125,7 +125,7 @@
      `(ido-indicator         ((t (:foreground ,red))))
      `(ido-incomplete-regexp ((t (:foreground ,red))))
 
-     `(ivy-current-match       ((t (:foreground ,ice :weight bold))))
+     `(ivy-current-match       ((t (:foreground ,ice++ :weight bold))))
      `(ivy-confirm-face        ((t (:foreground ,blue))))
      `(ivy-highlight           ((t (:foreground ,blue))))
      `(ivy-action              ((t (:foreground ,ice))))
@@ -133,10 +133,10 @@
      `(ivy-subdir              ((t (:foreground ,ice--))))
      `(ivy-match-required-face ((t (:foreground ,red))))
 
-     `(ivy-minibuffer-match-face-1 ((t (:foreground ,ice--))))
-     `(ivy-minibuffer-match-face-2 ((t (:foreground ,ice--))))
-     `(ivy-minibuffer-match-face-3 ((t (:foreground ,ice--))))
-     `(ivy-minibuffer-match-face-4 ((t (:foreground ,ice--))))
+     `(ivy-minibuffer-match-face-1 ((t (:foreground ,ice++))))
+     `(ivy-minibuffer-match-face-2 ((t (:foreground ,ice++))))
+     `(ivy-minibuffer-match-face-3 ((t (:foreground ,ice++))))
+     `(ivy-minibuffer-match-face-4 ((t (:foreground ,ice++))))
 
      `(magit-section-heading   ((t (:foreground ,blue :weight bold))))
      `(magit-section-highlight ((t (:background nil))))
@@ -237,21 +237,21 @@
 
   (glacier-with-colors variant
     (custom-theme-set-variables
-     'glacier
+     'black-ice
 
      `(ansi-color-names-vector '[,shadow ,red ,green ,yellow ,blue+ ,red+ ,blue ,ice++])
-     `(evil-normal-state-cursor   '(box ,blue-))
-     `(evil-insert-state-cursor   '((bar . 3) ,blue-))
-     `(evil-visual-state-cursor   '(box ,green))
-     `(evil-motion-state-cursor   '(box ,blue))
+     `(evil-normal-state-cursor   '(box ,cursor))
+     `(evil-insert-state-cursor   '((bar . 3) ,insert))
+     `(evil-visual-state-cursor   '(box ,visual))
+     `(evil-motion-state-cursor   '(box ,cursor))
      `(evil-replace-state-cursor  '(box ,red))
      `(evil-operator-state-cursor '(box ,red)))))
 
-(create-glacier-theme 'light)
+(create-black-ice-theme 'dark)
 
 ;;;###autoload
 (when (and (boundp 'custom-theme-load-path) load-file-name)
   (add-to-list 'custom-theme-load-path
 (file-name-as-directory (file-name-directory load-file-name))))
 
-(provide-theme 'glacier)
+(provide-theme 'black-ice)
