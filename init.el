@@ -17,7 +17,8 @@
   (require 'law-mode-line)
   ;; (require 'law-adv-mode-line)
 
-  (load-theme 'glacier t nil)
+  (load-theme 'glacier t t)
+  (load-theme 'black-ice t nil)
 
   (setq package-archives
         '(
@@ -48,8 +49,8 @@
     :config
     (evil-mode 1))
 
-  (use-package magit :ensure)
-  (use-package evil-magit :ensure)
+  ;; (use-package magit)
+  ;; (use-package evil-magit)
 
   (use-package paredit :ensure
     :diminish paredit-mode
@@ -74,7 +75,7 @@
   (use-package ivy :ensure
     :diminish ivy-mode
     :bind (:map ivy-minibuffer-map
-                ("C-h" . "DEL")
+                ("C-h" . ivy-backward-kill-word)
                 ("C-j" . ivy-next-line)
                 ("C-k" . ivy-previous-line)
                 ("C-l" . ivy-alt-done)
@@ -223,13 +224,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("45f945caaeaa81a400d5b9b0232550185a91e4130db3af4a9c259399acf2b98f" default)))
- '(evil-insert-state-cursor (quote ((bar . 3) "#6ee2ff")) t)
- '(evil-motion-state-cursor (quote (box "#6ee2ff")) t)
- '(evil-normal-state-cursor (quote (box "#6ee2ff")) t)
- '(evil-operator-state-cursor (quote (box "#f76ed5")) t)
- '(evil-replace-state-cursor (quote (box "#f76ed5")) t)
- '(evil-visual-state-cursor (quote (box "#27f1bf")) t)
+    ("78271d78b4fbd3912137b4842b9c8128c6c8f371ac73a741f28001dba5481200" "ddcd5118ba3d681ea08feb156e77e13a4c060fcb256046c272d9f16b86e0b0bb" "a950523b964f3c521fe507fe8ce1a03d52ada9417f0abd96b6df3d53bbedcf3b" "502a61aedc19ba0dbb7ca8abc0981ba7f062768bcdabddd0705dce35d9674c32" "a3f238a3bb6a69234114b45522b1d3b2acf2886e9324d0c076979aaa0dfe401a" "a983142f2dfc181a813a6b529e1582633980fa83a83c28a802c0f8510ed24c05" "b88b77cdac89e7eda4b0cc70405dd0a6855d945053e46955e466a13a76aae12d" "81c0973b0980fbf6dfcf50fb9b39f96914b72b1c325aa6025802a897ecc5e2b0" "45f945caaeaa81a400d5b9b0232550185a91e4130db3af4a9c259399acf2b98f" default)))
  '(global-auto-revert-mode t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
