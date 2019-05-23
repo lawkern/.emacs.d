@@ -81,6 +81,8 @@
 (global-set-key (kbd "C-x C-z") nil)
 
 (global-set-key (kbd "C-;") 'execute-extended-command)
+(global-set-key (kbd "C-,") 'other-window)
+
 (global-set-key (kbd "C-c l") "λ")
 (global-set-key (kbd "C-c r") 'query-replace)
 (global-set-key (kbd "C-c s") 'ff-find-other-file)
@@ -93,13 +95,14 @@
 ;; (global-set-key (kbd "C-c h") 'hs-hide-all)
 ;; (global-set-key (kbd "C-c o") 'hs-show-all)
 
-(global-set-key (kbd "C-c g") 'magit-status)
-(global-set-key (kbd "C-c M-g") 'magit-dispatch-popup)
+;; (global-set-key (kbd "C-c g") 'magit-status)
+;; (global-set-key (kbd "C-c M-g") 'magit-dispatch-popup)
 
-(global-set-key (kbd "C-c h") 'windmove-left)
-(global-set-key (kbd "C-c j") 'windmove-down)
-(global-set-key (kbd "C-c k") 'windmove-up)
-(global-set-key (kbd "C-c l") 'windmove-right)
+;; (global-set-key (kbd "C-c h") 'windmove-left)
+;; (global-set-key (kbd "C-c j") 'windmove-down)
+;; (global-set-key (kbd "C-c k") 'windmove-up)
+;; (global-set-key (kbd "C-c l") 'windmove-right)
+
 
 (global-set-key (kbd "<f7>") 'law-switch-to-minibuffer-window)
 
