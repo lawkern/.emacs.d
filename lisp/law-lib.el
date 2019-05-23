@@ -45,6 +45,7 @@
 
 (defun law-compilation-mode-hook ()
   (local-set-key (kbd "h") nil)
+  ;; (setq compilation-finish-function 'law-highlight-error-lines)
   (setq truncate-lines nil) ;; automatically becomes buffer local
   (set (make-local-variable 'truncate-partial-width-windows) nil))
 
@@ -180,6 +181,50 @@
      ;; matched above.
      ("\\b[0-9]\\(\\w\\|\\.\\)+?\\b" . font-lock-warning-face))))
 
+(require 'custom)
+
+(defvar law-all-overlays ())
+
+(defun law-delete-overlay (overlay is-after begin end &optional len)
+  (delete-overlay overlay))
+
+(defun law-highlight-current-line (bg-color)
+  (interactive)
+  (setq current-point (point))
+  (beginning-of-line)
+  (setq beg (point))
+  (forward-line 1)
+  (setq end (point))
+  ;; Create and place the overlay
+  (setq error-line-overlay (make-overlay 1 1))
+
+  ;; Append to list of all overlays
+  (setq law-all-overlays (cons error-line-overlay law-all-overlays))
+
+  (overlay-put error-line-overlay
+               'face '(background-color . ,bg-color))
+  (overlay-put error-line-overlay
+               'modification-hooks (list 'law-delete-overlay))
+  (move-overlay error-line-overlay beg end)
+  (goto-char current-point))
+
+(defun law-delete-all-overlays ()
+  (while law-all-overlays
+    (delete-overlay (car law-all-overlays))
+    (setq law-all-overlays (cdr law-all-overlays))))
+
+(defun law-highlight-error-lines (compilation-buffer process-result)
+  (interactive)
+  (law-delete-all-overlays)
+  (condition-case nil
+      (while t
+        (next-error)
+        ;; (law-highlight-current-line "#101822")
+        (save-excursion
+          (compilation-next-error-function 0)
+          (law-highlight-current-line "#101822")))
+    (error nil)))
+
 (defun law-fix-c-mode ()
   (interactive)
 
@@ -194,10 +239,15 @@
   (c-set-offset 'arglist-intro '+)
   (c-set-offset 'label '+)
   (c-set-offset 'statement-cont 0)
+  (c-set-offset 'statement-case-open 0)
+  (c-set-offset 'substatement-case-open 0)
   (c-set-offset 'substatement-open 0)
   (c-set-offset 'inline-open 0)
+  (c-set-offset 'case-open 0)
   ;; (c-set-offset 'cpp-macro 0)
   (c-set-offset 'arglist-close 0)
+  (c-set-offset 'brace-list-open 0)
+  (c-set-offset 'brace-list-intro '+)
 
   ;; Keys
   (local-set-key (kbd "C-c C-c") 'compile)
@@ -212,31 +262,40 @@
 
      ;; struct Foo
      ("^\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[\n;]"
-      (1 font-lock-type-face))
+      (1 font-lock-function-name-face))
 
      ;; typedef struct Foo Foo;
      ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
-      (1 font-lock-type-face)
-      (2 font-lock-type-face))
+      (1 font-lock-function-name-face)
+      (2 font-lock-function-name-face))
 
      ;; typedef struct Foo
      ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)\n"
-      (1 font-lock-type-face))
+      (1 font-lock-function-name-face))
 
      ;; } Foo;
      ("^}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
-      (1 font-lock-type-face))
+      (1 font-lock-function-name-face))
 
      ;; #define foo(a) ...
      ("^#define\\s-+\\([_a-zA-Z][_a-zA-Z0-9\*]*\\)\\(\(\\)[^\)]*\\(\)\\)"
-      (1 font-lock-function-name-face) ;; function name
-      (2 font-lock-function-name-face) ;; open paren
+      (1 font-lock-function-name-face)  ;; function name
+      (2 font-lock-function-name-face)  ;; open paren
       (3 font-lock-function-name-face)) ;; close paren
 
+     ;; TODO(law): The next regex will fail with function pointer parameters -
+     ;; find a way to properly balance parentheses. Commented version below
+     ;; works for that case but fails on...
+
+     ;; typedef DEBUG_PLATFORM_FREE_FILE(DebugPlatformFreeFile);
+
+     ;; ...missing the closing parethesis.
+
      ;; static void foo (int a, int b)
-     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\{]*\\(\)\\)"
-      (1 font-lock-function-name-face) ;; function name
-      (2 font-lock-function-name-face) ;; open paren
+     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
+      ;;"^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\{]*\\(\)\\)"
+      (1 font-lock-function-name-face)    ;; function name
+      (2 font-lock-function-name-face)    ;; open paren
       (3 font-lock-function-name-face)))) ;; close paren
 
   (message "c-mode was fixed\n"))
@@ -287,9 +346,10 @@
       '(define-auto-insert
          '("\\.\\(d\\)\\'" . "D module skeleton")
          '(nil
-           "///////////////////////////////////////////////////////////////////////////////////\n"
-           "// (c) copyright " (format-time-string "%Y") " Lawrence D. Kern\n"
-           "//\n\n"
+           "/*/////////////////////////////////////////////////////////////////////////////*/\n"
+           "/* (c) copyright " (format-time-string "%Y")
+           " Lawrence D. Kern ////////////////////////////////////////*/\n"
+           "/*/////////////////////////////////////////////////////////////////////////////*/\n\n"
            "module "
            (file-name-nondirectory (file-name-sans-extension buffer-file-name))
            ";\n"
