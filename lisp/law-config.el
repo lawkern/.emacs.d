@@ -1,13 +1,15 @@
 ;; law-config.el --- Simple configurations          -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018
-
-;; Author: Lawrence D. Kern
-
 ;;NOTE: increase cursor speed w/ key repeat->fast & delay until repeat->short
+
+(setq law-macos  (eq system-type 'darwin))
+(setq law-linux  (eq system-type 'gnu/linux))
+(setq law-win32  (eq system-type 'windows-nt))
+(setq law-cygwin (eq system-type 'cygwin))
 
 (setq law-work-code-style nil)
 
+(blink-cursor-mode -1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -17,10 +19,15 @@
 (show-paren-mode 1)
 (auto-insert-mode t)
 (column-number-mode)
+
+(evil-mode 1)
+(setq evil-toggle-key "")
+
 ;; (abbrev-mode 1)
 ;; (global-undo-tree-mode nil)
 
 ;; (setq initial-scratch-message ";; Lisp *scratch* Buffer\n\n")
+(setq compilation-ask-about-save nil)
 (setq truncate-partial-width-windows t)
 (setq ad-redefinition-action 'accept)
 (setq ring-bell-function 'ignore)
@@ -83,7 +90,6 @@
 (global-set-key (kbd "C-;") 'execute-extended-command)
 (global-set-key (kbd "C-,") 'other-window)
 
-(global-set-key (kbd "C-c l") "λ")
 (global-set-key (kbd "C-c r") 'query-replace)
 (global-set-key (kbd "C-c s") 'ff-find-other-file)
 (global-set-key (kbd "C-c c") 'compile)
@@ -103,12 +109,16 @@
 ;; (global-set-key (kbd "C-c k") 'windmove-up)
 ;; (global-set-key (kbd "C-c l") 'windmove-right)
 
-
+(global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "<f7>") 'law-switch-to-minibuffer-window)
+
+(global-set-key (kbd "<backspace>") 'ignore)
+(define-key minibuffer-local-map (kbd "C-h") 'backward-delete-char)
 
 (setq law-font
       (cond
        ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-9")
+       ((member "Iosevka" (font-family-list)) "Iosevka-9")
        ((member "Px437 ATI 8x16" (font-family-list)) "Px437 ATI 8x16-16")
        ((member "Px437 ATI 8x8-2y" (font-family-list)) "Px437 ATI 8x8-2y-12")
        ((member "Input" (font-family-list)) "Input-11")
@@ -142,7 +152,7 @@
   (setq comint-eol-on-send t)
   (setq law-font "Source Code Pro-9"))
 
-(when law-osx
+(when law-macos
   (setq compile-command "sh build.sh")
   (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
@@ -203,15 +213,23 @@
 
 ;; Inscrutable fix for jumping to compile errors in Clang:
 (require 'compile)
-(nth 5 (assoc 'gcc-include compilation-error-regexp-alist-alist))
-;; (4 . 5)
-
+(nth 5 (assoc 'gcc-include compilation-error-regexp-alist-alist)) ; (4 . 5)
 (setf (nth 5 (assoc 'gcc-include compilation-error-regexp-alist-alist)) 0)
 
 ;; Fix for D compile errors:
 (add-to-list
- 'compilation-error-regexp-alist
- '("^\\([^ \n]+\\)(\\([0-9]+\\)): \\(?:error\\|.\\|warnin\\(g\\)\\|remar\\(k\\)\\)"
+ 'compilation-error-regexp-alist-alist
+ '(dmd "^\\([^ \n]+\\)(\\([0-9]+\\)): \\(?:error\\|.\\|warnin\\(g\\)\\|remar\\(k\\)\\)"
    1 2 nil (3 . 4)))
+
+(add-to-list 'compilation-error-regexp-alist 'dmd)
+
+;; Fix for MSVC compile errors with column numbers enabled:
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(msvc "^\\([^\t\n]+\\)(\\([0-9]+\\),\\([0-9]+\\)): \\(?:error\\|warnin\\(g\\)\\|remar\\(k\\)\\)"
+        1 2 3 (4 . 5)))
+
+(add-to-list 'compilation-error-regexp-alist 'msvc)
 
 (provide 'law-config)
