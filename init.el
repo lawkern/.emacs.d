@@ -8,9 +8,9 @@
 ;; Library Functions
 ;;///////////////////////////////////////////////////////////////////////////////
 
-(defun law-create-emacs-path (dir-name)
+(defun law-create-emacs-path (directory-name)
   (concat user-emacs-directory
-          (convert-standard-filename dir-name)))
+          (convert-standard-filename directory-name)))
 
 (defun law-switch-to-minibuffer-window ()
   "Switch to minibuffer window (if active)"
@@ -94,7 +94,7 @@
   ;;    (with-no-warnings (font-lock-fontify-buffer))))
 
   ;; (hs-minor-mode)
-  (law-highlight-numbers)
+  ;; (law-highlight-numbers)
 
   (font-lock-add-keywords nil
       '(("\\<\\(NOTE\\)" 1 'font-lock-note t)
@@ -150,49 +150,28 @@
      ;; matched above.
      ("\\b[0-9]\\(\\w\\|\\.\\)+?\\b" . font-lock-warning-face))))
 
-(require 'custom)
-
-(defvar law-all-overlays ())
-
-(defun law-delete-overlay (overlay is-after begin end &optional len)
-  (delete-overlay overlay))
-
-(defun law-highlight-current-line (bg-color)
-  (interactive)
-  (setq current-point (point))
-  (beginning-of-line)
-  (setq beg (point))
-  (forward-line 1)
-  (setq end (point))
-  ;; Create and place the overlay
-  (setq error-line-overlay (make-overlay 1 1))
-
-  ;; Append to list of all overlays
-  (setq law-all-overlays (cons error-line-overlay law-all-overlays))
-
-  (overlay-put error-line-overlay
-               'face '(background-color . ,bg-color))
-  (overlay-put error-line-overlay
-               'modification-hooks (list 'law-delete-overlay))
-  (move-overlay error-line-overlay beg end)
-  (goto-char current-point))
-
-(defun law-delete-all-overlays ()
-  (while law-all-overlays
-    (delete-overlay (car law-all-overlays))
-    (setq law-all-overlays (cdr law-all-overlays))))
-
-(defun law-highlight-error-lines (compilation-buffer process-result)
-  (interactive)
-  (law-delete-all-overlays)
-  (condition-case nil
-      (while t
-        (next-error)
-        ;; (law-highlight-current-line "#101822")
-        (save-excursion
-          (compilation-next-error-function 0)
-          (law-highlight-current-line "#101822")))
-    (error nil)))
+(defun law-c-mode-font-lock-if0 (limit)
+  (save-restriction
+    (widen)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((depth 0) str start start-depth)
+        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
+          (setq str (match-string 1))
+          (if (string= str "if")
+              (progn
+                (setq depth (1+ depth))
+                (when (and (null start) (looking-at "\\s-+0"))
+                  (setq start (match-end 0)
+                        start-depth depth)))
+            (when (and start (= depth start-depth))
+              (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
+              (setq start nil))
+            (when (string= str "endif")
+              (setq depth (1- depth)))))
+        (when (and start (> depth 0))
+          (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
+  nil)
 
 (defun law-fix-c-mode ()
   (interactive)
@@ -237,7 +216,7 @@
   (setq law-c-builtin-regex (regexp-opt law-c-builtin 'words))
   (setq law-c-equality-regex (regexp-opt law-c-equality))
 
-
+  ;; NOTE(law): This creates a super minimal font-lock scheme for c-based modes:
   (font-lock-add-keywords
    nil
    `((,law-c-equality-regex . 'font-lock-operator-face)
@@ -249,8 +228,10 @@
      ;; TODO(law): The following does not account for assignments in single line
      ;; if expressions, i.e. if (...) foo = bar;
 
-     ;; if|while (... = ...)
-     ("\\(?:if\\|while\\)\\s-*\([^=<>\n]*\\(=\\)[^\n]*\n"
+     (law-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))
+
+     ;; if|while|assert (... = ...)
+     ("\\(?:if\\|while\\|assert\\)\\s-*\([^=<>\n]*\\(=\\)[^\n]*\n"
       (1 font-lock-negation-char-face))
 
      ;; struct|union|enum Foo
@@ -284,8 +265,8 @@
 
      ;; ...missing the closing parethesis.
 
-     ;; static void foo (int a, int b)
-     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
+     ;; static void * foo (int a, int b)
+     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\(?:\*\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
       ;;"^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\{]*\\(\)\\)"
       (1 font-lock-function-name-face)    ;; function name
       (2 font-lock-function-name-face)    ;; open paren
@@ -312,7 +293,7 @@
     '(nil
       "@echo off\n"
       "\n"
-      "set compiler_flags=-nologo -Z7 -Od\n"
+      "set compiler_flags=-nologo -Z7 -Od -diagnostics:column\n"
       "set linker_flags=-incremental:no\n"
       "\n"
       "cl " _ " %compiler_flags% /link %linker_flags%\n"
@@ -488,15 +469,20 @@
 
 (global-set-key (kbd "C-z") nil)
 (global-set-key (kbd "C-x C-z") nil)
-
 (global-set-key (kbd "C-;") 'execute-extended-command)
 (global-set-key (kbd "C-,") 'other-window)
-
 (global-set-key (kbd "C-c r") 'query-replace)
 (global-set-key (kbd "C-c s") 'ff-find-other-file)
 (global-set-key (kbd "C-c c") 'compile)
 (global-set-key (kbd "C-c e") 'eval-buffer)
 (global-set-key (kbd "C-c f") 'find-file-other-window)
+(global-set-key (kbd "<f5>") 'recompile)
+(global-set-key (kbd "<f7>") 'law-switch-to-minibuffer-window)
+(global-set-key (kbd "<backspace>") 'ignore)
+(global-set-key (kbd "C-h h") 'ignore)
+
+(define-key minibuffer-local-map (kbd "C-h") 'backward-delete-char)
+
 
 ;; (global-set-key (kbd "C-c i") 'hs-hide-block)
 ;; (global-set-key (kbd "C-c o") 'hs-show-block)
@@ -511,17 +497,11 @@
 ;; (global-set-key (kbd "C-c k") 'windmove-up)
 ;; (global-set-key (kbd "C-c l") 'windmove-right)
 
-(global-set-key (kbd "<f5>") 'recompile)
-(global-set-key (kbd "<f7>") 'law-switch-to-minibuffer-window)
-
-(global-set-key (kbd "<backspace>") 'ignore)
-(global-set-key (kbd "C-h h") 'ignore)
-(define-key minibuffer-local-map (kbd "C-h") 'backward-delete-char)
-
 (setq law-font
       (cond
-       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-9")
+       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-10")
        ((member "Iosevka"               (font-family-list)) "Iosevka-9")
+       ((member "Consolas"              (font-family-list)) "Consolas-10")
        ((member "Fira Code"             (font-family-list)) "Fira Code-9")
        ((member "ProggyCleanTTSZ"       (font-family-list)) "ProggyCleanTTSZ-12:antialias=none")
        ((member "Px437 ATI 8x16"        (font-family-list)) "Px437 ATI 8x16-16")
@@ -615,7 +595,6 @@
       ad-do-it)))
 
 ;; Inscrutable fix for jumping to compile errors in Clang:
-(require 'compile)
 (nth 5 (assoc 'gcc-include compilation-error-regexp-alist-alist)) ; (4 . 5)
 (setf (nth 5 (assoc 'gcc-include compilation-error-regexp-alist-alist)) 0)
 
@@ -656,8 +635,7 @@
 (add-to-list 'load-path (law-create-emacs-path "themes/"))
 (add-to-list 'custom-theme-load-path (law-create-emacs-path "themes/"))
 
-(load-theme 'glacier t t)
-(load-theme 'black-ice t nil)
+(load-theme 'glacier t nil)
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -675,6 +653,8 @@
 
 (require 'use-package)
 (require 'evil)
+(require 'custom)
+(require 'compile)
 
 (evil-mode 1)
 (setq evil-toggle-key "")
@@ -710,19 +690,23 @@
   :config (paredit-mode t))
 
 (set-frame-parameter nil 'fullscreen 'fullboth)
-(law-split-window)
 
+(law-split-window)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cua-mode nil nil (cua-base))
+ '(custom-safe-themes
+   (quote
+    ("a22f40b63f9bc0a69ebc8ba4fbc6b452a4e3f84b80590ba0a92b4ff599e53ad0" "8f97d5ec8a774485296e366fdde6ff5589cf9e319a584b845b6f7fa788c9fa9a" default)))
  '(global-auto-revert-mode t)
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (counsel-etags htmlize undo-tree markdown-mode evil paredit ivy use-package)))
+    (magit counsel-etags htmlize undo-tree markdown-mode evil paredit ivy use-package)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 
 (custom-set-faces
