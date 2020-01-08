@@ -20,7 +20,7 @@
     (select-window (active-minibuffer-window))))
 
 (defun law-split-window ()
-  "Split the frame horizontally based on the frame's width."
+  "Split the frame horizontally based on the frame's current width."
   (interactive)
   (delete-other-windows)
   (message "frame width: %d\n" (frame-width))
@@ -35,7 +35,7 @@
   (set-frame-parameter (selected-frame) 'alpha value))
 
 (defun law-shorten-directory (dir max-length)
-  "Show up to max-length of a directory name"
+  "Show directory name dir, up to value of max-length."
   (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
         (output ""))
     (when (and path (equal "" (car path)))
@@ -46,12 +46,6 @@
     (when path
       (setq output (concat ".../" output)))
     output))
-
-(defun law-compilation-mode-hook ()
-  (local-set-key (kbd "h") nil)
-  ;; (setq compilation-finish-function 'law-highlight-error-lines)
-  (setq truncate-lines nil) ;; automatically becomes buffer local
-  (set (make-local-variable 'truncate-partial-width-windows) nil))
 
 (defun law-rename-file-and-buffer (new-name)
   (interactive "sNew name: ")
@@ -82,24 +76,6 @@
       (set-visited-file-name newname)
       (set-buffer-modified-p nil)
       t)))
-
-(defun law-fix-prog-mode ()
-  ;; (if (bound-and-true-p law-mode)
-  ;;    (font-lock-add-keywords nil law-mode-keywords)
-  ;;  (font-lock-remove-keywords nil law-mode-keywords))
-
-  ;; (if (fboundp 'font-lock-flush)
-  ;;    (font-lock-flush)
-  ;;  (when font-lock-mode
-  ;;    (with-no-warnings (font-lock-fontify-buffer))))
-
-  ;; (hs-minor-mode)
-  ;; (law-highlight-numbers)
-
-  (font-lock-add-keywords nil
-      '(("\\<\\(NOTE\\)" 1 'font-lock-note t)
-        ("\\<\\(TODO\\)" 1 'font-lock-todo t)
-        ("\\<\\(IMPORTANT\\)" 1 'font-lock-important t))))
 
 (defun law-electrify-return-if-match (arg)
   (interactive "P")
@@ -132,7 +108,7 @@
       (3 font-lock-string-face))
 
      ;; Invalid floating point number.  Must be before valid decimal.
-     ("\\b[0-9].*?\\..+?\\b" . font-lock-warning-face)
+     ;; ("\\b[0-9].*?\\..+?\\b" . font-lock-warning-face)
 
      ;; Valid decimal number.  Must be before octal regexes otherwise 0 and 0l
      ;; will be highlighted as errors.  Will highlight invalid suffix though.
@@ -150,60 +126,76 @@
      ;; matched above.
      ("\\b[0-9]\\(\\w\\|\\.\\)+?\\b" . font-lock-warning-face))))
 
-(defun law-c-mode-font-lock-if0 (limit)
-  (save-restriction
-    (widen)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((depth 0) str start start-depth)
-        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
-          (setq str (match-string 1))
-          (if (string= str "if")
-              (progn
-                (setq depth (1+ depth))
-                (when (and (null start) (looking-at "\\s-+0"))
-                  (setq start (match-end 0)
-                        start-depth depth)))
-            (when (and start (= depth start-depth))
-              (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
-              (setq start nil))
-            (when (string= str "endif")
-              (setq depth (1- depth)))))
-        (when (and start (> depth 0))
-          (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
-  nil)
+(defun law-compilation-mode-hook ()
+  (local-set-key (kbd "h") nil)
+  ;; (setq compilation-finish-function 'law-highlight-error-lines)
+  (setq truncate-lines nil) ;; automatically becomes buffer local
+  (set (make-local-variable 'truncate-partial-width-windows) nil))
 
-(defun law-fix-c-mode ()
-  (interactive)
-
-  ;; Indentation:
-  (setq c-default-style "linux")
-  (setq c-basic-offset 3)
+(defun law-prog-mode-hook ()
+  (hs-minor-mode)
+  (law-highlight-numbers)
   (setq comment-style 'indent)
-  (setq comment-start "//")
-  (setq comment-end "")
-  (c-set-offset 'case-label '+)
-  ;; (c-set-offset 'access-label 0)
-  (c-set-offset 'arglist-intro '+)
-  (c-set-offset 'label '+)
-  (c-set-offset 'statement-cont 0)
-  (c-set-offset 'statement-case-open 0)
-  (c-set-offset 'substatement-case-open 0)
-  (c-set-offset 'substatement-open 0)
-  (c-set-offset 'inline-open 0)
-  (c-set-offset 'case-open 0)
-  ;; (c-set-offset 'cpp-macro 0)
-  (c-set-offset 'arglist-close 0)
-  (c-set-offset 'brace-list-open 0)
-  (c-set-offset 'brace-list-intro '+)
 
-  ;; Keys
-  (local-set-key (kbd "C-c C-c") 'compile)
-  (local-set-key (kbd "C-c -") 'law-insert-c-separator)
-  ;; (local-set-key (kbd "RET") 'law-electrify-return-if-match)
+  (font-lock-add-keywords nil
+                          '(("\\<\\(NOTE\\)" 1 'font-lock-note t)
+                            ("\\<\\(TODO\\)" 1 'font-lock-todo t)
+                            ("\\<\\(IMPORTANT\\)" 1 'font-lock-important t))))
 
-  (modify-syntax-entry ?_ "w")
+(defun law-swift-mode-hook ()
+  (setq swift-mode:basic-offset 3))
 
+(c-add-style
+ "law"
+ '("linux"
+   (c-basic-offset . 3)
+   ;; (comment-style . indent)
+   (c-cleanup-list . nil)
+   (c-hanging-semi&comma-criteria . ((lambda () 'stop)))
+
+   (c-hanging-braces-alist . ((statement-cont)
+                              (brace-list-open)
+                              (brace-list-close)
+                              (brace-list-close before)
+                              (defun-close)
+                              (block-close)
+                              (class-close)))
+
+   (c-offsets-alist . ((case-label +)
+                       (access-label 0)
+                       (statement-cont 0)
+                       ;; (label +)
+                       ;; (c-set-offset 'arglist-intro '+)
+                       ;; (c-set-offset 'statement-case-open 0)
+                       ;; ;; (c-set-offset 'substatement-case-open 0)
+                       ;; (c-set-offset 'substatement-open 0)
+                       ;; (c-set-offset 'inline-open 0)
+                       ;; (c-set-offset 'case-open 0)
+                       ;; (c-set-offset 'arglist-close 0)
+                       ;; (c-set-offset 'brace-list-open 0)
+                       ;; (c-set-offset 'brace-list-intro '+)
+                       ))))
+
+(defun law-c-initialization-hook ()
+  ""
+  (define-key c-mode-base-map (kbd "C-m") 'c-context-line-break)
+  (define-key c-mode-base-map (kbd "C-c -") 'law-insert-c-separator)
+  (define-key c-mode-base-map (kbd "RET") 'law-electrify-return-if-match)
+  (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
+
+(defun law-c-mode-common-hook ()
+  "This hook overwrites settings across the various modes
+controlled by cc-mode (c, c++, java, etc.)."
+
+  ;; (c-set-style "law")
+
+  (c-toggle-comment-style  -1) ;; Use // instead of /*
+  (c-toggle-electric-state  1)
+  (c-toggle-auto-newline    1)
+
+  (modify-syntax-entry ?_ "w")) ;; Treat underscored_symbols as words
+
+(defun law-c-mode-hook ()
   (setq law-c-builtin '("global" "persist" "unit"))
   (setq law-c-equality '("===" "!==" "==" "!="))
   (setq law-c-operators '("+=" "-=" "->" "--" "++"
@@ -219,84 +211,150 @@
   ;; NOTE(law): This creates a super minimal font-lock scheme for c-based modes:
   (font-lock-add-keywords
    nil
-   `((,law-c-equality-regex . 'font-lock-operator-face)
-     ;; (,law-c-types-regex . 'font-lock-type-face)
-     (,law-c-builtin-regex . 'font-lock-builtin-face)
+   `((,law-c-builtin-regex  . 'font-lock-builtin-face)
+     (,law-c-equality-regex . 'font-lock-operator-face)
+     ;; (,law-c-types-regex    . 'font-lock-type-face)
 
      ;; TODO(law): Find ways to optimize all these.
-
-     ;; TODO(law): The following does not account for assignments in single line
-     ;; if expressions, i.e. if (...) foo = bar;
-
-     (law-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))
 
      ;; if|while|assert (... = ...)
      ("\\(?:if\\|while\\|assert\\)\\s-*\([^=<>\n]*\\(=\\)[^\n]*\n"
       (1 font-lock-negation-char-face))
 
      ;; struct|union|enum Foo
-     ("^\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)[\n;]"
+     ("^\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)\\s-*[\n;]"
       (1 font-lock-function-name-face))
 
      ;; typedef struct|union|enum Foo Foo;
-     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
-      ;; (1 font-lock-function-name-face)
-      (2 font-lock-function-name-face))
+     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\w*\\s-+\\(\\w*\\);"
+      (1 font-lock-function-name-face))
 
      ;; typedef struct|union|enum Foo
-     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\)\n"
+     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)\n"
       (1 font-lock-function-name-face))
 
      ;; } Foo;
-     ("^}\\s-+\\([_a-zA-Z][_a-zA-Z0-9]*\\);"
+     ("^}\\s-+\\(\\w*\\);"
       (1 font-lock-function-name-face))
 
-     ;; #define foo(a) ...
-     ("^#define\\s-+\\([_a-zA-Z][_a-zA-Z0-9\*]*\\)\\(\(\\)[^\)]*\\(\)\\)"
+     ;; Highlight the macro function name and enclosing parentheses of a macro
+     ;; function definition.
+
+     ;; Example:
+     ;;   #define foo(a) ...
+
+     ("^#define\\s-+\\(\\w*\\)\\(\(\\)[^\)]*\\(\)\\)"
       (1 font-lock-function-name-face)  ;; function name
       (2 font-lock-function-name-face)  ;; open paren
       (3 font-lock-function-name-face)) ;; close paren
 
-     ;; TODO(law): The next regex will fail with function pointer parameters -
-     ;; find a way to properly balance parentheses. Commented version below
-     ;; works for that case but fails on...
+     ;; Highlight the function name and enclosing parentheses of a function
+     ;; declaration.
 
-     ;; typedef DEBUG_PLATFORM_FREE_FILE(DebugPlatformFreeFile);
+     ;; Examples:
+     ;;   typedef PLATFORM_FREE_FILE(PlatformFreeFile);
+     ;;   static void * foo (int a, int b)
 
-     ;; ...missing the closing parethesis.
 
-     ;; static void * foo (int a, int b)
-     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\(?:\*\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
+     ("^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\(?:\*\\)*\\(\\w*\\)\\(\(\\)[^\)]*\\(\)\\)"
+
+      ;;"^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\(?:\*\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\)]*\\(\)\\)"
       ;;"^\\b\\(?:[_a-zA-Z][_a-zA-Z0-9\*]*\\s-+\\)*\\([_a-zA-Z][_a-zA-Z0-9]*\\)\\(\(\\)[^\{]*\\(\)\\)"
+
       (1 font-lock-function-name-face)    ;; function name
       (2 font-lock-function-name-face)    ;; open paren
-      (3 font-lock-function-name-face)))) ;; close paren
+      (3 font-lock-function-name-face)
+      )
 
-  (message "c-mode was fixed\n"))
+     ))
 
-(defun law-fix-sh-mode ()
+  (message "[c-mode]\n"))
+
+(defun law-sh-mode-hook ()
   (local-set-key (kbd "C-c C-c") 'compile))
 
-(defun law-fix-html-for-work ()
-  (setq indent-tabs-mode t)
+(defun law-html-mode-hook ()
   (setq-default tab-width 2)
-  (setq comment-start "<!---")
-  (setq comment-end "--->"))
+  (when law-work-code-style
+    (setq indent-tabs-mode nil)
+    (setq comment-start "<!---")
+    (setq comment-end "--->")
+    (setq comment-start-skip "<!---[ 	]*")
+    (setq comment-end-skip"[ 	]*---[
+]*>")))
 
-(defun law-fix-js-for-work ()
-  (setq indent-tabs-mode t)
+(defun law-js-mode-hook ()
+  (setq indent-tabs-mode nil)
   (setq-default tab-width 2))
+
+(defun law--indent-coldfusion ()
+  "Fix ColdFusion indentation."
+
+  ;; TODO(law): <cfmodule> actually requires more complicated behaviour. It can
+  ;; have a closing tag, in which case its nested content needs to be
+  ;; indented. If it does not have a closing tag, a trailing /> is usually
+  ;; incorrect and will result in the tag executing twice (unless it properly
+  ;; handles its end tag in the tag definition --- it usually doesn't).
+
+  ;; TODO(law): Figure out how to handle <cfelseif> and <cfelse>. These act as
+  ;; both closing tags to <cfif> and opening tags for the closing </cfif>. Maybe
+  ;; just choose to unindent them by one unit?
+
+  ;; TODO(law): Add tags as necessary
+
+  (push "cfset" sgml-unclosed-tags)
+  (push "cfparam" sgml-unclosed-tags)
+  (push "cfprocparam" sgml-unclosed-tags)
+  (push "cfelseif" sgml-unclosed-tags)
+  (push "cfelse" sgml-unclosed-tags)
+  (push "cfinclude" sgml-unclosed-tags)
+  (push "cfmodule" sgml-unclosed-tags)
+
+  (push "cfset" sgml-empty-tags)
+  (push "cfparam" sgml-empty-tags)
+  (push "cfprocparam" sgml-empty-tags)
+  (push "cfelseif" sgml-empty-tags)
+  (push "cfelse" sgml-empty-tags)
+  (push "cfinclude" sgml-empty-tags)
+  (push "cfmodule" sgml-empty-tags))
+
+(defun law--indent-coldfusion-post ()
+  "Post-indentation fixes.")
+
+(advice-add 'sgml-calculate-indent :before #'law--indent-coldfusion)
 
 (defun law-autoinsert-templates ()
   (define-auto-insert
-    '("\\.bat\\'" . "Batch file skeleton")
+    '("\\.bat\\'" . "Batch build file skeleton")
     '(nil
       "@echo off\n"
       "\n"
-      "set compiler_flags=-nologo -Z7 -Od -diagnostics:column\n"
+      "set compiler_flags=-nologo -Z7 -Od -FC -diagnostics:column\n"
       "set linker_flags=-incremental:no\n"
       "\n"
+
+      "IF NOT EXIST build mkdir build\n"
+      "pushd build\n\n"
       "cl " _ " %compiler_flags% /link %linker_flags%\n"
+      "\n"
+      "popd\n"
+      ))
+
+  (define-auto-insert
+    '("\\.sh\\'" . " Shell script build file skeleton")
+    '(nil
+      "compiler_flags=\"\n"
+      "-g\n"
+      "-fdiagnostics-absolute-paths\n"
+      "-Wall\n"
+      "-Wno-unused-value\n"
+      "-Wno-unused-variable\n"
+      "-Wno-unused-function\n"
+      "-Wno-missing-braces\n"
+      "-Wno-implicit-int\n"
+      "\"\n"
+      "\n"
+      "clang " _ " $compiler_flags\n"
       "\n"
       ))
 
@@ -373,25 +431,25 @@
 (setq law-work-code-style nil)
 
 (setq mode-line-format (list
-       mode-line-front-space
-       mode-line-mule-info
-       mode-line-client
-       mode-line-modified
-       mode-line-remote
-       mode-line-frame-identification
-       mode-line-buffer-identification
-       "   "
-       mode-line-position
-       "   "
-       "("
-       ;; mode-line-modes
-       '(:eval mode-name)
-       ")"
-       "   "
-       '(vc-mode vc-mode)
-       mode-line-misc-info
-       ;; evil-mode-line-tag
-       mode-line-end-spaces))
+                        mode-line-front-space
+                        mode-line-mule-info
+                        mode-line-client
+                        mode-line-modified
+                        mode-line-remote
+                        mode-line-frame-identification
+                        mode-line-buffer-identification
+                        "   "
+                        mode-line-position
+                        "   "
+                        "("
+                        ;; mode-line-modes
+                        '(:eval mode-name)
+                        ")"
+                        "   "
+                        '(vc-mode vc-mode)
+                        mode-line-misc-info
+                        ;; evil-mode-line-tag
+                        mode-line-end-spaces))
 
 (setq-default mode-line-format mode-line-format)
 
@@ -438,9 +496,12 @@
 (setq use-package-always-ensure t)
 ;; (setq same-window-regexps '("."))
 (setq same-window-regexps nil)
-(setq font-lock-maximum-decoration 1)
-;; (setq font-lock-maximum-decoration '((c-mode . l) (c++-mode . 1) (t . t)))
+(setq font-lock-maximum-decoration '((c-mode . 1) (c++-mode . 1) (t . t)))
+(setq c-default-style '((java-mode . "law") (awk-mode . "awk") (other . "law")))
 (setq org-export-dispatch-use-expert-ui 1)
+
+(set-variable 'frame-background-mode 'dark)
+(mapc 'frame-set-background-mode (frame-list))
 
 (setq cperl-indent-level 2)
 (setq javascript-indent-level 2)
@@ -467,7 +528,7 @@
 
 (set-variable 'grep-command "grep -irHn ")
 
-(global-set-key (kbd "C-z") nil)
+;; (global-set-key (kbd "C-z") nil)
 (global-set-key (kbd "C-x C-z") nil)
 (global-set-key (kbd "C-;") 'execute-extended-command)
 (global-set-key (kbd "C-,") 'other-window)
@@ -482,7 +543,6 @@
 (global-set-key (kbd "C-h h") 'ignore)
 
 (define-key minibuffer-local-map (kbd "C-h") 'backward-delete-char)
-
 
 ;; (global-set-key (kbd "C-c i") 'hs-hide-block)
 ;; (global-set-key (kbd "C-c o") 'hs-show-block)
@@ -499,15 +559,17 @@
 
 (setq law-font
       (cond
-       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-10")
-       ((member "Iosevka"               (font-family-list)) "Iosevka-9")
-       ((member "Consolas"              (font-family-list)) "Consolas-10")
+       ((member "Essential PragmataPro" (font-family-list)) "Essential PragmataPro-9")
+       ((member "Iosevka Term SS08"     (font-family-list)) "Iosevka Term SS08-9")
        ((member "Fira Code"             (font-family-list)) "Fira Code-9")
+       ((member "Iosevka"               (font-family-list)) "Iosevka-9")
+       ((member "PxPlus IBM VGA8"       (font-family-list)) "PxPlus IBM VGA8-8:antialias=none")
+       ((member "Consolas"              (font-family-list)) "Consolas-10")
+       ((member "Source Code Pro"       (font-family-list)) "Source Code Pro-10")
+       ((member "Input"                 (font-family-list)) "Input-11")
        ((member "ProggyCleanTTSZ"       (font-family-list)) "ProggyCleanTTSZ-12:antialias=none")
        ((member "Px437 ATI 8x16"        (font-family-list)) "Px437 ATI 8x16-16")
        ((member "Px437 ATI 8x8-2y"      (font-family-list)) "Px437 ATI 8x8-2y-12")
-       ((member "Input"                 (font-family-list)) "Input-11")
-       ((member "Source Code Pro"       (font-family-list)) "Source Code Pro-10")
        ((member "Meslo LG M"            (font-family-list)) "Meslo LG M-12")
        (t "monospace")))
 
@@ -540,7 +602,7 @@
   (setq mac-command-modifier 'meta)
   (setq mac-pass-command-to-system nil)
   (setq mac-command-key-is-meta t
-        exec-path (append exec-path '("/usr/local/bin:/Users/law/.cargo/bin"))
+        exec-path (append exec-path '("/Users/law/bin:/usr/local/bin:/Users/law/.cargo/bin"))
         inferior-lisp-program "/applications/lang/cmucl/bin/lisp"
         geiser-racket-binary "/applications/lang/racket/bin/racket"
         slime-contribs '(slime-fancy))
@@ -558,11 +620,7 @@
 
   (setenv "PATH"
           (concat (getenv "PATH")
-                  ":/usr/local/bin:/Users/law/.cargo/bin:/Library/TeX/texbin")))
-
-(when law-work-code-style
-  (add-hook 'js2-mode-hook 'law-fix-js-for-work)
-  (add-hook 'html-mode-hook 'law-fix-html-for-work))
+                  ":/Users/law/bin:/usr/local/bin:/Users/law/.cargo/bin:/Library/TeX/texbin")))
 
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
 
@@ -586,7 +644,6 @@
         (newline-mark 10 [? 8629 10]) ;[8629 10]
         (tab-mark 9 [8594 9] [92 9])))
 
-;; (setq fixme-modes '(law-mode))
 ;; bury *scratch* buffer instead of killing it
 (defadvice kill-buffer (around kill-buffer-around-advice activate)
   (let ((buffer-to-kill (ad-get-arg 0)))
@@ -602,7 +659,7 @@
 (add-to-list
  'compilation-error-regexp-alist-alist
  '(dmd "^\\([^ \n]+\\)(\\([0-9]+\\)): \\(?:error\\|.\\|warnin\\(g\\)\\|remar\\(k\\)\\)"
-   1 2 nil (3 . 4)))
+       1 2 nil (3 . 4)))
 
 (add-to-list 'compilation-error-regexp-alist 'dmd)
 
@@ -615,16 +672,25 @@
 (add-to-list 'compilation-error-regexp-alist 'msvc)
 
 (add-to-list 'auto-mode-alist '("\\.metal\\'" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.cfm\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.cfm\\'" . mhtml-mode))
 (add-to-list 'auto-mode-alist '("\\.cfc\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.vs\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.ps\\'" . c-mode))
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'c-mode-common-hook 'law-fix-c-mode)
+(add-hook 'c-initialization-hook 'law-c-initialization-hook)
+(add-hook 'c-mode-common-hook 'law-c-mode-common-hook)
+(add-hook 'c-mode-hook 'law-c-mode-hook)
+(add-hook 'swift-mode-hook 'law-swift-mode-hook)
+(add-hook 'mhtml-mode-hook 'law-html-mode-hook)
+(add-hook 'js-mode-hook 'law-js-mode-hook)
+
 (add-hook 'compilation-mode-hook 'law-compilation-mode-hook)
-(add-hook 'prog-mode-hook 'law-fix-prog-mode)
+(add-hook 'prog-mode-hook 'law-prog-mode-hook)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(add-hook 'sh-mode-hook #'law-fix-sh-mode)
+(add-hook 'sh-mode-hook #'law-sh-mode-hook)
 (add-hook 'after-init-hook 'law-autoinsert-templates)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -635,6 +701,7 @@
 (add-to-list 'load-path (law-create-emacs-path "themes/"))
 (add-to-list 'custom-theme-load-path (law-create-emacs-path "themes/"))
 
+(setq glacier-intensity 'soft)
 (load-theme 'glacier t nil)
 
 (require 'package)
@@ -668,10 +735,14 @@
               ("RET" . ivy-alt-done))
   :init (ivy-mode 1)
   :config
+  (setq ivy-switch-buffer-map nil)
   (setq ivy-use-virtual-buffers t)
   (setq ivy-height 25)
   (setq ivy-count-format "(%d/%d) ")
   (setq ivy-extra-directories nil))
+
+;; (use-package aggressive-indent
+;;   :config (global-aggressive-indent-mode))
 
 (use-package counsel-etags
   :config
@@ -684,21 +755,23 @@
                         'counsel-etags-virtual-update-tags 'append 'local))))
 
 (use-package paredit :ensure
-  :bind (("RET" . law-electrify-return-if-match))
+  ;; :bind (("RET" . law-electrify-return-if-match))
   :hook ((emacs-lisp-mode lisp-mode clojure-mode lisp-interaction-mode scheme-mode)
          . paredit-mode)
   :config (paredit-mode t))
 
-(set-frame-parameter nil 'fullscreen 'fullboth)
+;; (set-frame-parameter nil 'fullscreen 'fullboth)
+;; (toggle-frame-maximized)
 
-(law-split-window)
+;; (law-split-window)
+(if (/= (count-windows) 2)
+    (split-window-right))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cua-mode nil nil (cua-base))
  '(custom-safe-themes
    (quote
     ("a22f40b63f9bc0a69ebc8ba4fbc6b452a4e3f84b80590ba0a92b4ff599e53ad0" "8f97d5ec8a774485296e366fdde6ff5589cf9e319a584b845b6f7fa788c9fa9a" default)))
@@ -706,7 +779,7 @@
  '(global-visible-mark-mode t)
  '(package-selected-packages
    (quote
-    (magit counsel-etags htmlize undo-tree markdown-mode evil paredit ivy use-package)))
+    (aggressive-indent magit counsel-etags htmlize undo-tree markdown-mode evil paredit ivy use-package)))
  '(safe-local-variable-values (quote ((Lexical-binding . t)))))
 
 (custom-set-faces
