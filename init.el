@@ -147,6 +147,10 @@
 
 (setq-default fill-column 80)
 
+;; NOTE(law): Never split windows vertically.
+(setq split-width-threshold 0)
+(setq split-height-threshold nil)
+
 ;; NOTE(law): Turn off the startup screen.
 (setq inhibit-startup-screen      t)
 (setq inhibit-startup-buffer-menu t)
