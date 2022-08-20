@@ -18,7 +18,7 @@
     (select-window (active-minibuffer-window))))
 
 (global-set-key (kbd "C-;") 'execute-extended-command)
-(global-set-key (kbd "C-,") 'law.next-window)
+(global-set-key (kbd "C-,") 'law-next-window)
 (global-set-key (kbd "C-<") 'law-prev-window)
 (global-set-key (kbd "C-c b") 'revert-buffer)
 (global-set-key (kbd "C-c e") 'eval-buffer)
@@ -227,6 +227,13 @@
               ;; NOTE(law): Treat hyphenated-symbols as words
               (modify-syntax-entry ?- "w")))
 
+(setq compilation-mode-hook nil)
+(add-hook 'compilation-mode-hook
+          #'(lambda ()
+              (setq truncate-lines nil)
+              (setq compilation-ask-about-save nil)
+              (setq compilation-skip-threshold 1)
+              (setq compilation-context-lines 0)))
 
 ;; NOTE(law): Customize cc-mode-based modes (c, c++, java, etc.).
 (add-hook 'c-mode-common-hook
