@@ -334,3 +334,7 @@
      )))
 
 (add-hook 'c-mode-hook 'law-c-mode-hook)
+
+;; NOTE(law): Configure Windows specific functionality.
+(when (eq system-type 'windows-nt)
+  (setq compile-command "build.bat"))
