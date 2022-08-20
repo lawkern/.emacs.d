@@ -131,7 +131,7 @@
 ;; NOTE(law): Don't bother creating #lock-files#.
 (setq create-lockfiles nil)
 
-;NOTE(law): Don't use tabs for indentation.
+;; NOTE(law): Don't use tabs for indentation.
 (setq-default indent-tabs-mode nil)
 
 ;; NOTE(law): Make accidental tab ('	') characters obviously visible.
@@ -334,3 +334,7 @@
      )))
 
 (add-hook 'c-mode-hook 'law-c-mode-hook)
+
+;; NOTE(law): Configure Windows specific functionality.
+(when (eq system-type 'windows-nt)
+  (setq compile-command "build.bat"))
