@@ -1,4 +1,35 @@
-;;; -*- lexical-binding: t; -*- 
+;;; -*- lexical-binding: t; -*-
+
+;; NOTE(law): Set global key bindings up top, so they still work if something
+;; breaks later in the configuration.
+(defun law-next-window ()
+  (interactive)
+  (other-window 1))
+
+(defun law-prev-window ()
+  (interactive)
+  (other-window -1))
+
+(defun law-switch-to-minibuffer ()
+  "Switch to minibuffer window (if active)."
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-frame-set-input-focus (window-frame (active-minibuffer-window)))
+    (select-window (active-minibuffer-window))))
+
+(global-set-key (kbd "C-;") 'execute-extended-command)
+(global-set-key (kbd "C-,") 'law.next-window)
+(global-set-key (kbd "C-<") 'law-prev-window)
+(global-set-key (kbd "C-c b") 'revert-buffer)
+(global-set-key (kbd "C-c e") 'eval-buffer)
+(global-set-key (kbd "C-c s") 'ff-find-other-file)
+(global-set-key (kbd "C-c c") 'compile)
+(global-set-key (kbd "C-'")  'recompile)
+(global-set-key (kbd "<f5>") 'recompile)
+(global-set-key (kbd "<f7>") 'law-switch-to-minibuffer)
+(global-set-key (kbd "<f9>") 'previous-error)
+(global-set-key (kbd "<f10>") 'next-error)
+(global-set-key (kbd "<f12>") 'first-error)
 
 ;; NOTE(law): Any personal lisp code is added to the `code` directory inside
 ;; .emacs.d.
@@ -9,7 +40,7 @@
   (setq custom-file custom-path)
   (when (file-exists-p custom-path)
     (load custom-file nil t)))
- 
+
 ;; NOTE(law): Turn off the built-in GUI.
 (menu-bar-mode   -1)
 (tool-bar-mode   -1)
@@ -19,10 +50,39 @@
 ;; NOTE(law): Display the cursor's current column in the mode-line.
 (column-number-mode 1)
 
+;; NOTE(law): Delete trailing whitespace when saving a file.
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; NOTE(law): Simplify the mode-line display.
+(setq mode-line-format
+      (list mode-line-front-space
+            mode-line-mule-info
+            mode-line-client
+            mode-line-modified
+            mode-line-remote
+            mode-line-frame-identification
+            mode-line-buffer-identification
+            "   "
+            mode-line-position
+            "   "
+            "("
+            '(:eval mode-name)
+            ")"
+            "   "
+            '(vc-mode vc-mode)
+            "   "
+            mode-line-misc-info
+            mode-line-end-spaces))
+
+(setq-default mode-line-format mode-line-format)
+
 ;; NOTE(law): Remove lag from displaying paren matches. The mode must be toggled
 ;; before the delay update will take effect.
-(setq show-paren-delay 0) 
+(setq show-paren-delay 0)
 (show-paren-mode 1)
+
+;; NOTE(law): Set default font.
+(add-to-list 'default-frame-alist '(font . "Iosevka Term SS08-10"))
 
 ;; NOTE(law): Define custom font-lock faces.
 (defface font-lock-operator-face
@@ -31,7 +91,7 @@
   :group 'law-faces)
 
 (defface font-lock-assignment-face
-  '((t (:inherit font-lock-operator-face)))
+  '((t (:inherit font-lock-warning-face)))
   "Highlighting for assignment operators."
   :group 'law-faces)
 
@@ -54,7 +114,7 @@
 (setq modus-themes-bold-constructs t)
 (setq modus-themes-italic-constructs t)
 (setq modus-themes-syntax '(faint))
-(setq modus-themes-mode-line '())  
+(setq modus-themes-mode-line '())
 (setq modus-themes-paren-match '(bold intense))
 (setq modus-themes-region '(bg-only))
 
@@ -92,33 +152,6 @@
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-startup-message     t)
 
-;; NOTE(law): Set global key bindings.
-(defun law-next-window ()
-  (interactive)
-  (other-window 1))
-
-(defun law-prev-window ()
-  (interactive)
-  (other-window -1))
-
-(defun law-switch-to-minibuffer ()
-  "Switch to minibuffer window (if active)."
-  (interactive)
-  (when (active-minibuffer-window)
-    (select-frame-set-input-focus (window-frame (active-minibuffer-window)))
-    (select-window (active-minibuffer-window))))
-
-(global-set-key (kbd "C-;") 'execute-extended-command)
-(global-set-key (kbd "C-,") 'law-next-window)
-(global-set-key (kbd "C-<") 'law-prev-window)
-(global-set-key (kbd "C-c b") 'revert-buffer)
-(global-set-key (kbd "C-c e") 'eval-buffer)
-(global-set-key (kbd "C-c s") 'ff-find-other-file)
-(global-set-key (kbd "C-c c") 'compile)
-(global-set-key (kbd "C-'")  'recompile)
-(global-set-key (kbd "<f5>") 'recompile)
-(global-set-key (kbd "<f7>") 'law-switch-to-minibuffer)
-
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
@@ -145,7 +178,7 @@
 (ivy-mode 1)
 
 ;; NOTE(law): Don't autocomplete over new directories names.
-(setq ivy-magic-slash-non-match-action nil) 
+(setq ivy-magic-slash-non-match-action nil)
 
 ;; NOTE(law): Configure ivy minibuffer.
 (setq ivy-height 25)
@@ -195,75 +228,98 @@
 (add-hook 'c-mode-common-hook
           #'(lambda ()
               ;; NOTE(law): Use // instead of /*
-              (c-toggle-comment-style  -1)  
+              (c-toggle-comment-style  -1)
 
               ;; NOTE(law): Use electric indentation.
-              (c-toggle-electric-state -1)  
+              (c-toggle-electric-state -1)
 
               ;; NOTE(law): Insert newlines after special characters.
               ;; (c-toggle-auto-newline -1)
 
               ;; NOTE(law): Last turned off because insertion of parens into
               ;; existing expressions became annoying
-              (electric-pair-local-mode 0) 
+              (electric-pair-local-mode 0)
 
               (electric-indent-local-mode 1)))
 
-(defvar law-c-style
-  '("linux"
-    (c-basic-offset . 3)
-    (c-cleanup-list . nil)
-    (c-hanging-semi&comma-criteria . ((lambda () 'stop)))
-    (c-offsets-alist . ((case-label +)
-                        (access-label 0)
-                        (statement-cont 0)
-                        (inline-open 0)))
-    (c-echo-syntactic-information-p . t)))
+;; NOTE(law): Define a custom C-style for specific indentation and other
+;; formatting rules.
+(c-add-style
+ "law"
+ '("linux"
+   (c-basic-offset . 3)
+   (c-cleanup-list . nil)
+   (c-hanging-semi&comma-criteria . ((lambda () 'stop)))
+   (c-offsets-alist . ((case-label +)
+                       (access-label 0)
+                       (statement-cont 0)
+                       (inline-open 0)))
+   (c-echo-syntactic-information-p . t))
+ nil)
 
-(c-add-style "law" law-c-style nil)
-
+;; NOTE(law): Use the custom C-style for other C-like modes.
 (setq c-default-style '((csharp-mode . "law")
                         (java-mode   . "law")
                         (awk-mode    . "awk")
                         (other       . "law")))
 
+;; NOTE(law): Define regexes for highlighting specific classes of C operators.
+(setq law-c-self-assignment (regexp-opt '("<<=" ">>="  "+=" "-=" "*=" "/=" "%=" "&=" "|=" "^=" "~=") t))
+(setq law-c-bit-shift       (regexp-opt '("<<" ">>") t))
+(setq law-c-comparison      (regexp-opt '("<" ">" "<=" ">=") t))
+(setq law-c-equality        (regexp-opt '("==" "!=") t))
+(setq law-c-assignment      (regexp-opt '("=") t))
 
-(setq law-c-comparison (regexp-opt '("<" ">" "<=" ">=") t))
-(setq law-c-equality   (regexp-opt '("==" "!=") t))
-(setq law-c-assignment (regexp-opt '("<<=" ">>="  "+=" "-=" "*=" "/=" "%=" "&=" "|=" "^=" "~=" "=") t))
+(defun law-c-mode-hook ()
+  ;; NOTE(law): Remove the standard CC-mode font lock keywords.
+  (font-lock-add-keywords nil '() 'set)
 
-(add-hook 'c-mode-hook
-          #'(lambda ()
-              (font-lock-add-keywords nil '() 'set)
+  ;; NOTE(law): Only highlight specific identifiers that are helpful to
+  ;; differentiate in C (Function declarations, type declarations, = vs ==,
+  ;; etc.).
+  (font-lock-add-keywords
+   nil
+   `(
+     ;; typedef ... Foo;
+     ("^typedef\\s-+\\(?:.*\\)\\s-+\\**\\(\\w*\\);"
+      (1 'font-lock-type-decl-face))
 
-              (font-lock-add-keywords
-               nil
-               `(
-                 ;; typedef ... Foo;
-                 ("^typedef\\s-+\\(?:.*\\)\\s-+\\**\\(\\w*\\);"
-                  (1 'font-lock-type-decl-face))
+     ;; typedef COMPUTE_TRANSLATION(Translate);
+     ("^typedef\\s-+\\(.*\\)(\\(\\w*\\));"
+      (1 'default)
+      (2 'font-lock-type-decl-face))
 
-                 ;; typedef COMPUTE_TRANSLATION(Translate);
-                 ("^typedef\\s-+\\(.*\\)(\\(\\w*\\));"
-                  (1 'default)
-                  (2 'font-lock-type-decl-face))
+     ;; typedef struct|union|enum Foo
+     ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)$"
+      (1 'font-lock-type-decl-face))
 
-                 ;; typedef struct|union|enum Foo
-                 ("^typedef\\s-+\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)$"
-                  (1 'font-lock-type-decl-face))
+     ;; } Foo;
+     ("^}\\s-+\\(\\w*\\);"
+      (1 'font-lock-type-decl-face))
 
-                 ;; } Foo;
-                 ("^}\\s-+\\(\\w*\\);"
-                  (1 'font-lock-type-decl-face))
+     ;; NOTE(law): Self assignment operators are matched before comparison, so <
+     ;; and <= don't take precedence over <<=.
+     (,law-c-self-assignment . 'font-lock-assignment-face)
 
-                 ;; NOTE(law): Comparison must precede equality, so that e.g. >
-                 ;; does not take precedence over >=. Equality must precede
-                 ;; assignment so that e.g. = does not take precedence over ==.
-                 (,law-c-comparison . 'default)
-                 (,law-c-equality   . 'font-lock-equality-face)
-                 (,law-c-assignment . 'font-lock-assignment-face)
+     ;; NOTE(law): Equality operators are matched before assignment, so =
+     ;; doesn't take precedence over == and !=.
+     (,law-c-equality . 'font-lock-equality-face)
 
-                 ;; Function declaration
-                 ("^\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
-                  (1 'font-lock-function-decl-face))
-                 ))))
+     ;; NOTE(law): Bit shift operators are matched before comparison, so <
+     ;; doesn't take precedence over <<.
+     (,law-c-bit-shift . 'default)
+
+     ;; NOTE(law): Comparison operators are matched before assignment, so =
+     ;; doesn't take precedence over <=.
+     (,law-c-comparison . 'default)
+
+     ;; NOTE(law): The = operator is matched after any other operators that
+     ;; contain = (e.g. <=, ==, etc.).
+     (,law-c-assignment . 'font-lock-assignment-face)
+
+     ;; Function declaration
+     ("^\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
+      (1 'font-lock-function-decl-face))
+     )))
+
+(add-hook 'c-mode-hook 'law-c-mode-hook)
