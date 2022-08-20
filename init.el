@@ -138,6 +138,8 @@
 (setq whitespace-style '(face tabs))
 (whitespace-mode 1)
 
+;; NOTE(law): Store information about recently accessed files in a local temp
+;; directory.
 (setq recentf-save-file (expand-file-name "temp/recentf" user-emacs-directory))
 (recentf-mode t)
 
@@ -156,6 +158,8 @@
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-startup-message     t)
 
+;; TODO(law): It would be nice to require no packages at all, or at least store
+;; a definitive local version for each one.
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
@@ -227,7 +231,7 @@
               ;; NOTE(law): Treat hyphenated-symbols as words
               (modify-syntax-entry ?- "w")))
 
-(setq compilation-mode-hook nil)
+;; NOTE(law): Customize compilation buffer.
 (add-hook 'compilation-mode-hook
           #'(lambda ()
               (setq truncate-lines nil)
