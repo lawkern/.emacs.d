@@ -149,6 +149,9 @@
 
 (setq-default fill-column 80)
 
+;; NOTE(law): Open new buffers in existing windows.
+(setq split-window-preferred-function nil)
+
 ;; NOTE(law): Never split windows vertically.
 (setq split-width-threshold 0)
 (setq split-height-threshold nil)
@@ -215,7 +218,10 @@
           #'(lambda ()
               ;; NOTE(law): Turn off line-wrapping when in any programming-based
               ;; modes.
-              (setq truncate-lines t)))
+              (setq truncate-lines t)
+
+              ;; NOTE(law): Treat underscore_identifiers as words.
+              (modify-syntax-entry ?_ "w")))
 
 ;; NOTE(law): Display hidden files and use human readable format.
 (setq law-dired-ls-switches "-lha")
@@ -341,4 +347,10 @@
 
 ;; NOTE(law): Configure Windows specific functionality.
 (when (eq system-type 'windows-nt)
+  ;; NOTE(law): Don't assume Windows will have a reasonable grep installed by
+  ;; default.
+  (grep-apply-setting 'grep-command "findstr -snil ")
+
+  ;; NOTE(law): Don't assume Windows will have a reasonable build system
+  ;; installed by default.
   (setq compile-command "build.bat"))
