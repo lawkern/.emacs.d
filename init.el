@@ -177,6 +177,7 @@
 ;; NOTE(law): Must be set before evil is included.
 (setq evil-respect-visual-line-mode t)
 (setq evil-toggle-key "C-`")
+(setq evil-want-C-u-scroll t)
 
 (require 'evil)
 (evil-mode 1)
