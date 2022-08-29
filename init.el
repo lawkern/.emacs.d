@@ -345,10 +345,53 @@
 
 (add-hook 'c-mode-hook 'law-c-mode-hook)
 
+(defun law-js-mode-hook ()
+  (font-lock-add-keywords
+   nil
+   `(("\\bfunction\\s-*\\(\\w*\\)\("
+      (1 'font-lock-function-decl-face))))
+
+  (setq js-indent-level 2)
+  (setq js-switch-indent-offset 2)
+  (setq indent-tabs-mode nil)
+  (setq-default tab-width 8))
+
+(add-hook 'js-mode-hook 'law-js-mode-hook)
+
+;; NOTE(law): Automatically insert comment headers in source code files.
+(auto-insert-mode t)
+
+(defun law-define-auto-inserts ()
+  (define-auto-insert
+    '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\|c\\|m\\)\\'" . "C/C++ skeleton")
+    '(nil
+      "/* /////////////////////////////////////////////////////////////////////////// */\n"
+      "/* (c) copyright " (format-time-string "%Y")
+      " Lawrence D. Kern /////////////////////////////////////// */\n"
+      "/* /////////////////////////////////////////////////////////////////////////// */\n\n"
+      _))
+
+  (define-auto-insert
+    '("\\.\\(HH?\\|hh\\|hxx\\|hpp\\|h++\\|h\\)\\'" . "Header skeleton")
+    '(nil
+      "#if !defined("
+      (upcase (file-name-nondirectory (file-name-sans-extension buffer-file-name)))
+      "_H)\n"
+      "/* /////////////////////////////////////////////////////////////////////////// */\n"
+      "/* (c) copyright " (format-time-string "%Y")
+      " Lawrence D. Kern /////////////////////////////////////// */\n"
+      "/* /////////////////////////////////////////////////////////////////////////// */\n\n"
+      _ "\n\n"
+      "#define " (upcase (file-name-nondirectory (file-name-sans-extension buffer-file-name))) "_H\n"
+      "#endif")))
+
+(add-hook 'after-init-hook 'law-define-auto-inserts)
+
 ;; NOTE(law): Configure Windows specific functionality.
 (when (eq system-type 'windows-nt)
   ;; NOTE(law): Don't assume Windows will have a reasonable grep installed by
   ;; default.
+  (require 'grep)
   (grep-apply-setting 'grep-command "findstr -snil ")
 
   ;; NOTE(law): Don't assume Windows will have a reasonable build system
