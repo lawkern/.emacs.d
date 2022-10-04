@@ -162,7 +162,7 @@
    ;; Font-lock
    `(font-lock-builtin-face           ((t (:inherit default))))
    `(font-lock-function-name-face     ((t (:inherit default))))
-   `(font-lock-keyword-face           ((t (:inherit default :foreground ,y))))
+   `(font-lock-keyword-face           ((t (:inherit default :foreground ,y-))))
    `(font-lock-string-face            ((t (:foreground ,y+))))
    `(font-lock-variable-name-face     ((t (:inherit default))))
    `(font-lock-constant-face          ((t (:inherit default))))

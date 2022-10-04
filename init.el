@@ -82,7 +82,7 @@
 (show-paren-mode 1)
 
 ;; NOTE(law): Set default font.
-(add-to-list 'default-frame-alist '(font . "Iosevka Term SS08 Bold-11"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Fixed Medium-10"))
 
 ;; NOTE(law): Define custom font-lock faces.
 (defface font-lock-operator-face
@@ -388,6 +388,14 @@
   (font-lock-add-keywords
    nil
    `(
+     ;; struct|union|enum
+     ("\\<\\(struct\\|union\\|enum\\)\\>"
+      (1 'font-lock-keyword-face))
+
+     ;; struct|union|enum Foo
+     ("^\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)\\s-*$"
+      (1 'font-lock-type-decl-face))
+
      ;; typedef ... Foo;
      ("^typedef\\s-+\\(?:.*\\)\\s-+\\**\\(\\w*\\);"
       (1 'font-lock-type-decl-face))
