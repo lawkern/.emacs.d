@@ -82,7 +82,7 @@
 (show-paren-mode 1)
 
 ;; NOTE(law): Set default font.
-(add-to-list 'default-frame-alist '(font . "Iosevka Term SS08-10"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Term SS08 Bold-11"))
 
 ;; NOTE(law): Define custom font-lock faces.
 (defface font-lock-operator-face
@@ -110,6 +110,30 @@
   "Highlighting for function names in declarations."
   :group 'law-faces)
 
+(defface font-lock-note
+  '((t (:inherit font-lock-comment-face :underline t :bold t :foreground "#00c06f")))
+  "NOTE comment highlighting"
+  :group 'law-faces)
+
+(defface font-lock-todo
+  '((t (:inherit font-lock-comment-face :underline t :bold t :foreground "#ff8059")))
+  "TODO comment highlighting"
+  :group 'law-faces)
+
+(defface font-lock-important
+  '((t (:inherit font-lock-comment-face :underline t :bold t :foreground "#c0c530")))
+  "IMPORTANT comment highlighting"
+  :group 'law-faces)
+
+(defface font-lock-number-face
+  '((t (:inherit font-lock-string-face)))
+  "Highlighting for number constants."
+  :group 'law-faces)
+
+(let ((theme-path (expand-file-name "themes/" user-emacs-directory)))
+  (add-to-list 'load-path theme-path)
+  (add-to-list 'custom-theme-load-path theme-path))
+
 ;; NOTE(law): Configure the built-in modus color themes.
 (setq modus-themes-bold-constructs t)
 (setq modus-themes-italic-constructs t)
@@ -122,7 +146,8 @@
 (setq font-lock-maximum-decoration '((c-mode . 1) (c++-mode . 1) (t . t)))
 
 ;; NOTE(law): Load any preferred color themes.
-(load-theme 'modus-vivendi t nil)
+(load-theme 'drybones t nil)
+(load-theme 'modus-vivendi t t)
 (load-theme 'modus-operandi t t)
 
 ;; NOTE(law): Don't generate ~backup-files.
@@ -214,12 +239,69 @@
               ;; NOTE(law): Treat underscore_identifiers as words.
               (modify-syntax-entry ?_ "w")))
 
+(defun law-highlight-comment-keywords ()
+  (font-lock-add-keywords
+   nil
+   `(("\\<\\(NOTE\\)\\>\\(?:(\\(\\w*\\))\\)" ; NOTE(law): Test comment.
+      (1 'font-lock-note prepend))
+
+     ("\\<\\(TODO\\)\\>\\(?:(\\(\\w*\\))\\)" ; TODO(law): Test Comment.
+      (1 'font-lock-todo prepend))
+
+     ("\\<\\(IMPORTANT\\)\\>\\(?:(\\(\\w*\\))\\)" ; IMPORTANT(law): Test Comment.
+      (1 'font-lock-important prepend)))))
+
+(defun law-highlight-number-keywords ()
+  (font-lock-add-keywords
+   nil
+
+   `(
+     ;; Valid hex number (will highlight invalid suffix though)
+     ("\\b0x[[:xdigit:]]+[uUlL]*\\b" . 'font-lock-number-face)
+
+     ;; Invalid hex number
+     ("\\b0x\\(\\w\\|\\.\\)+\\b" . font-lock-warning-face)
+
+     ;; Valid floating point number.
+     ("\\(\\b[0-9]+\\|\\)\\(\\.\\)\\([0-9]+\\(e[-]?[0-9]+\\)?\\([lL]?\\|[dD]?[fF]?\\)\\)\\b"
+      (1 'font-lock-number-face)
+      (2 'font-lock-number-face)
+      (3 'font-lock-number-face))
+
+     ;; Invalid floating point number. Must be before valid decimal.
+     ;; ("\\b[0-9].*?\\..+?\\b" . font-lock-warning-face)
+
+     ;; Valid decimal number. Must be before octal regexes otherwise 0 and 0l
+     ;; will be highlighted as errors. Will highlight invalid suffix though.
+     ("\\b\\(0\\|[1-9][0-9]*\\)\\([uUlL]*\\)\\b"
+      (1 'font-lock-number-face)
+      (2 'font-lock-number-face))
+
+     ;; Valid octal number
+     ("\\b0[0-7]+[uUlL]*\\b" . 'font-lock-number-face)
+
+     ;; Floating point number with no digits after the period.  This must be
+     ;; after the invalid numbers, otherwise it will "steal" some invalid
+     ;; numbers and highlight them as valid
+     ("\\b\\([0-9]+\\)\\." (1 'font-lock-number-face))
+
+     ;; Invalid number. Must be last so it only highlights anything not matched
+     ;; above.
+     ("\\b[0-9]\\(\\w\\|\\.\\)+?\\b" . font-lock-warning-face)
+     )))
+
 ;; NOTE(law): Customize programming-based modes.
 (add-hook 'prog-mode-hook
           #'(lambda ()
               ;; NOTE(law): Turn off line-wrapping when in any programming-based
               ;; modes.
               (setq truncate-lines t)
+
+              ;; NOTE(law): Highlight number constants.
+              ;; (law-highlight-number-keywords)
+
+              ;; NOTE(law): Highlight keywords in comments.
+              (law-highlight-comment-keywords)
 
               ;; NOTE(law): Treat underscore_identifiers as words.
               (modify-syntax-entry ?_ "w")))
@@ -299,6 +381,10 @@
   ;; NOTE(law): Only highlight specific identifiers that are helpful to
   ;; differentiate in C (Function declarations, type declarations, = vs ==,
   ;; etc.).
+
+  (law-highlight-comment-keywords)
+  ;; (law-highlight-number-keywords)
+
   (font-lock-add-keywords
    nil
    `(
@@ -338,6 +424,9 @@
      ;; NOTE(law): The = operator is matched after any other operators that
      ;; contain = (e.g. <=, ==, etc.).
      (,law-c-assignment . 'font-lock-assignment-face)
+
+     ;; Macro function declaration
+     ("^#define\\s-+\\(\\w+\\)(" (1 'font-lock-function-decl-face))
 
      ;; Function declaration
      ("^\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
