@@ -82,7 +82,7 @@
 (show-paren-mode 1)
 
 ;; NOTE(law): Set default font.
-(add-to-list 'default-frame-alist '(font . "Iosevka Fixed Medium-10"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Law-10"))
 
 ;; NOTE(law): Define custom font-lock faces.
 (defface font-lock-operator-face
@@ -185,6 +185,10 @@
 (setq inhibit-startup-screen      t)
 (setq inhibit-startup-buffer-menu t)
 (setq inhibit-startup-message     t)
+
+;; NOTE(law): Increase undo limit
+(setq undo-limit 20000000)
+(setq undo-strong-limit 40000000)
 
 ;; TODO(law): It would be nice to require no packages at all, or at least store
 ;; a definitive local version for each one.
@@ -455,6 +459,19 @@
   (setq-default tab-width 8))
 
 (add-hook 'js-mode-hook 'law-js-mode-hook)
+
+(defun law-css-mode-hook ()
+  (setq css-indent-offset 2)
+  (modify-syntax-entry ?- "w"))
+
+(add-hook 'css-mode-hook 'law-css-mode-hook)
+
+(defun law-go-mode-hook ()
+  (setq-default tab-width 4)
+  (modify-syntax-entry ?_ "w"))
+
+(add-hook 'go-mode-hook 'law-go-mode-hook)
+
 
 ;; NOTE(law): Automatically insert comment headers in source code files.
 (auto-insert-mode t)
