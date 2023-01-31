@@ -84,6 +84,7 @@
    `(warning                  ((t (:inherit font-lock-warning-face))))
    `(error                    ((t (:foreground ,r+))))
    `(region                   ((t (:foreground nil :background ,bg++ :distant-foreground nil))))
+   ;; `(region                   ((t (:background nil))))
    `(highlight                ((t (:foreground ,g :background ,bg+))))
    `(tooltip                  ((t (:foreground ,fg :background ,bg))))
    `(border                   ((t (:foreground ,r :background ,r :color ,r))))
@@ -161,9 +162,9 @@
 
    ;; Font-lock
    `(font-lock-builtin-face           ((t (:inherit default))))
-   `(font-lock-function-name-face     ((t (:inherit default))))
+   `(font-lock-function-name-face     ((t (:inherit default :foreground ,y-))))
    `(font-lock-keyword-face           ((t (:inherit default :foreground ,y-))))
-   `(font-lock-string-face            ((t (:foreground ,y+))))
+   `(font-lock-string-face            ((t (:foreground ,g++))))
    `(font-lock-variable-name-face     ((t (:inherit default))))
    `(font-lock-constant-face          ((t (:inherit default))))
    `(font-lock-type-face              ((t (:inherit default))))
@@ -178,8 +179,8 @@
    `(font-lock-regexp-grouping-backslash ((t (:foreground ,fg-  :weight bold))))
 
    ;; Custom Font-lock
-   `(font-lock-function-decl-face    ((t (:foreground ,y :weight bold))))
-   `(font-lock-type-decl-face        ((t (:foreground ,y :weight bold))))
+   `(font-lock-function-decl-face    ((t (:foreground ,y :weight normal))))
+   `(font-lock-type-decl-face        ((t (:foreground ,y :weight normal))))
    `(font-lock-number-face           ((t (:inherit font-lock-string-face))))
    `(font-lock-number-extension-face ((t (:inherit default))))
    `(font-lock-operator-face         ((t (:foreground ,c))))
@@ -195,7 +196,7 @@
    `(mode-line           ((t (:foreground ,fg+  :background ,bg++ :height 1.0 :box (:line-width 1 :color ,bg+ :style released-button))))) ; :style released-button
    `(mode-line-inactive  ((t (:foreground ,fg-  :background ,bg+  :height 1.0 :box (:line-width 1 :color ,bg++ :style nil)))))
    `(mode-line-path      ((t (:foreground ,fg--))))
-   `(mode-line-buffer    ((t (:foreground ,fg+ :weight bold))))
+   `(mode-line-buffer    ((t (:foreground ,fg+))))
    `(mode-line-read-only ((t (:foreground ,fg--))))
    `(mode-line-highlight ((t (:foreground ,c))))
    `(mode-line-warning   ((t (:foreground ,r+))))
@@ -229,12 +230,12 @@
    ;; Ido
    `(ido-subdir            ((t (:foreground ,fg))))
    `(ido-first-match       ((t (:foreground ,y))))
-   `(ido-only-match        ((t (:inherit ido-first-match :weight bold))))
+   `(ido-only-match        ((t (:inherit ido-first-match :weight normal))))
    `(ido-indicator         ((t (:foreground ,r))))
    `(ido-incomplete-regexp ((t (:foreground ,r))))
 
    ;; Ivy
-   `(ivy-current-match           ((t (:foreground ,y :weight bold))))
+   `(ivy-current-match           ((t (:foreground ,y :weight normal))))
    `(ivy-confirm-face            ((t (:foreground ,c))))
    `(ivy-highlight               ((t (:foreground ,c))))
    `(ivy-action                  ((t (:foreground ,fg))))
@@ -242,10 +243,10 @@
    `(ivy-subdir                  ((t (:foreground ,b+))))
    `(ivy-org                     ((t (:foreground ,fg))))
    `(ivy-match-requir-face       ((t (:foreground ,r))))
-   `(ivy-minibuffer-match-face-1 ((t (:foreground ,g+ :weight bold))))
-   `(ivy-minibuffer-match-face-2 ((t (:foreground ,g+ :weight bold))))
-   `(ivy-minibuffer-match-face-3 ((t (:foreground ,g+ :weight bold))))
-   `(ivy-minibuffer-match-face-4 ((t (:foreground ,g+ :weight bold))))
+   `(ivy-minibuffer-match-face-1 ((t (:foreground ,g+ :weight normal))))
+   `(ivy-minibuffer-match-face-2 ((t (:foreground ,g+ :weight normal))))
+   `(ivy-minibuffer-match-face-3 ((t (:foreground ,g+ :weight normal))))
+   `(ivy-minibuffer-match-face-4 ((t (:foreground ,g+ :weight normal))))
 
    ;; CSS Mode
    `(css-selector ((t (:foreground ,b))))

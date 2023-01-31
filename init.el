@@ -47,6 +47,14 @@
 (scroll-bar-mode -1)
 (tooltip-mode    -1)
 
+;; NOTE(law): Reduce fringe width for all frames.
+(fringe-mode '(2 . 2))
+
+;; NOTE(law): Turn on relative line numbering.
+;; (global-display-line-numbers-mode)
+;; (setq-default display-line-numbers 'relative)
+;; (setq display-line-numbers-type 'relative)
+
 ;; NOTE(law): Display the cursor's current column in the mode-line.
 (column-number-mode 1)
 
@@ -210,6 +218,17 @@
 
 (require 'evil)
 (evil-mode 1)
+
+;; NOTE(law): Use key-chords for entering normal mode.
+(unless (package-installed-p 'key-chord)
+  (package-install 'key-chord))
+
+(setq key-chord-two-keys-delay 0.05)
+(setq key-chord-one-keys-delay 0.1)
+
+(key-chord-mode 1)
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
 
 ;; NOTE(law): Use ivy for minibuffer autocompletion.
 (unless (package-installed-p 'ivy)
