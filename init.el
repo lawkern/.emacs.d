@@ -41,14 +41,16 @@
   (when (file-exists-p custom-path)
     (load custom-file nil t)))
 
-;; NOTE(law): Turn off the built-in GUI.
 (menu-bar-mode   -1)
-(tool-bar-mode   -1)
-(scroll-bar-mode -1)
-(tooltip-mode    -1)
+(if (display-graphic-p)
+    (progn
+      ;; NOTE(law): Turn off the built-in GUI.
+      (tool-bar-mode   -1)
+      (scroll-bar-mode -1)
+      (tooltip-mode    -1)
 
-;; NOTE(law): Reduce fringe width for all frames.
-(fringe-mode '(2 . 2))
+      ;; NOTE(law): Reduce fringe width for all frames.
+      (fringe-mode '(2 . 2))))
 
 ;; NOTE(law): Turn on relative line numbering.
 ;; (global-display-line-numbers-mode)
@@ -465,6 +467,7 @@
      )))
 
 (add-hook 'c-mode-hook 'law-c-mode-hook)
+(add-hook 'c++-mode-hook 'law-c-mode-hook)
 
 (defun law-js-mode-hook ()
   (font-lock-add-keywords
