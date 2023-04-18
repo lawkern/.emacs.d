@@ -41,16 +41,25 @@
   (when (file-exists-p custom-path)
     (load custom-file nil t)))
 
-(menu-bar-mode   -1)
-(if (display-graphic-p)
-    (progn
-      ;; NOTE(law): Turn off the built-in GUI.
-      (tool-bar-mode   -1)
-      (scroll-bar-mode -1)
-      (tooltip-mode    -1)
+(menu-bar-mode -1) ; NOTE(law): Turn off regardless of display.
 
-      ;; NOTE(law): Reduce fringe width for all frames.
-      (fringe-mode '(2 . 2))))
+(defun law-customize-frame (frame)
+  (when (display-graphic-p frame)
+    ;; NOTE(law): Turn off the built-in GUI.
+    (tool-bar-mode   -1)
+    (scroll-bar-mode -1)
+    (tooltip-mode    -1)
+
+    ;; NOTE(law): Reduce the fringe size.
+    (fringe-mode '(2 . 2))))
+
+;; NOTE(law): Apply customization to all existing frames.
+(mapc 'law-customize-frame (frame-list))
+
+;; NOTE(law): Apply customization to future frames.
+(add-hook 'after-make-frame-functions 'law-customize-frame)
+
+  ;; NOTE(law): Reduce fringe width for all frames.
 
 ;; NOTE(law): Turn on relative line numbering.
 ;; (global-display-line-numbers-mode)

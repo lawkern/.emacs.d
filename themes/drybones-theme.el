@@ -220,6 +220,9 @@
    `(compilation-mode-line-exit ((t (:weight bold))))
    `(compilation-mode-line-fail ((t (:weight bold :inherit compilation-error))))
 
+   ;; Batch files
+   `(bat-label-face ((t (:inherit font-lock-function-decl-face))))
+
    ;; Comint
    `(comint-highlight-input  ((default (:foreground ,fg--))))
    `(comint-highlight-prompt ((default (:inherit nil))))
@@ -318,7 +321,7 @@
 
    ;; Outline
    `(outline-1 ((t (:foreground ,y+))))   ; :inherit fixed-pitch :weight bold
-   `(outline-2 ((t (:foreground ,b))))  ; :inherit fixed-pitch :weight bold
+   `(outline-2 ((t (:foreground ,y-))))  ; :inherit fixed-pitch :weight bold
    `(outline-3 ((t (:foreground ,fg)))) ; :inherit fixed-pitch :weight bold
    `(outline-4 ((t (:foreground ,fg)))) ; :inherit fixed-pitch :weight bold
    `(outline-5 ((t (:foreground ,fg)))) ; :inherit fixed-pitch :weight bold
@@ -340,7 +343,7 @@
    `(org-code                  ((t (:inherit default))))
    `(org-document-info-keyword ((t (:foreground ,fg--))))
    ;; `(org-document-title        ((t (:inherit variable-pitch :foreground ,c :weight bold :height 2.0))))
-   `(org-document-title        ((t (:inherit fixed-pitch :foreground ,c :weight bold :height 1.0))))
+   `(org-document-title        ((t (:inherit regular :foreground ,c :weight bold :height 1.0))))
    `(org-document-info         ((t (:foreground ,fg))))
    `(org-latex-and-related     ((t (:foreground ,fg))))
 
