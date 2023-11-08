@@ -17,6 +17,7 @@
     (select-frame-set-input-focus (window-frame (active-minibuffer-window)))
     (select-window (active-minibuffer-window))))
 
+
 (global-set-key (kbd "C-;") 'execute-extended-command)
 (global-set-key (kbd "C-,") 'law-next-window)
 (global-set-key (kbd "C-<") 'law-prev-window)
@@ -225,10 +226,13 @@
 ;; NOTE(law): Must be set before evil is included.
 (setq evil-respect-visual-line-mode t)
 (setq evil-toggle-key "C-`")
-(setq evil-want-C-u-scroll t)
+(setq evil-want-C-u-scroll nil)
 
 (require 'evil)
 (evil-mode 1)
+
+(define-key evil-insert-state-map (kbd "C-;") 'evil-force-normal-state)
+(define-key evil-normal-state-map (kbd "C-;") 'execute-extended-command)
 
 ;; NOTE(law): Use key-chords for entering normal mode.
 (unless (package-installed-p 'key-chord)
@@ -332,7 +336,7 @@
               (setq truncate-lines t)
 
               ;; NOTE(law): Highlight number constants.
-              ;; (law-highlight-number-keywords)
+              (law-highlight-number-keywords)
 
               ;; NOTE(law): Highlight keywords in comments.
               (law-highlight-comment-keywords)
@@ -417,13 +421,13 @@
   ;; etc.).
 
   (law-highlight-comment-keywords)
-  ;; (law-highlight-number-keywords)
+  (law-highlight-number-keywords)
 
   (font-lock-add-keywords
    nil
    `(
      ;; struct|union|enum
-     ("\\<\\(struct\\|union\\|enum\\)\\>"
+     ("\\<\\(struct\\|union\\|enum\\|extern\\)\\>"
       (1 'font-lock-keyword-face))
 
      ;; struct|union|enum Foo
@@ -471,7 +475,11 @@
      ("^#define\\s-+\\(\\w+\\)(" (1 'font-lock-function-decl-face))
 
      ;; Function declaration
-     ("^\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
+     ;; ("^\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
+     ("^\\(__attribute__\\)"
+      (1 'default))
+
+     ("^\\(?:__attribute__((\\(?:\\w+\\|,\\s-\\)*))\\s-+\\)*\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
       (1 'font-lock-function-decl-face))
      )))
 

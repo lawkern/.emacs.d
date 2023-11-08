@@ -184,6 +184,7 @@
    `(font-lock-number-face           ((t (:inherit font-lock-string-face))))
    `(font-lock-number-extension-face ((t (:inherit default))))
    `(font-lock-operator-face         ((t (:foreground ,c))))
+   `(font-lock-equality-face         ((t (:foreground ,c))))
    `(font-lock-assignment-face       ((t (:foreground ,y-))))
    `(font-lock-macro-face            ((t (:foreground ,b-))))
    `(font-lock-todo                  ((t (:foreground ,r++ :weight bold :underline t))))
