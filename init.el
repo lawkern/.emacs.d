@@ -512,6 +512,18 @@
 (add-hook 'go-mode-hook 'law-go-mode-hook)
 
 
+;; NOTE(law): Use nasm-mode for reasonable assembly editing.
+(unless (package-installed-p 'nasm-mode)
+  (package-install 'nasm-mode))
+
+(defun law-nasm-mode-hook ()
+  (setq-default nasm-basic-offset 3))
+
+(add-hook 'nasm-mode-hook 'law-nasm-mode-hook)
+
+(add-to-list 'auto-mode-alist '("\\.asm\\'" . nasm-mode))
+
+
 ;; NOTE(law): Automatically insert comment headers in source code files.
 (auto-insert-mode t)
 
@@ -551,3 +563,4 @@
   ;; NOTE(law): Don't assume Windows will have a reasonable build system
   ;; installed by default.
   (setq compile-command "build.bat"))
+(put 'dired-find-alternate-file 'disabled nil)
