@@ -4,14 +4,14 @@
   "Determines whether org-mode should use variable pitch fonts."
   :type 'boolean)
 
-(let ((fg++ "#faf1d7")
+(let ((fg+ "#faf1d7")
       ;; (fg+  "#d1c3ab")
       ;; (fg   "#c2a982")
       ;; (fg-  "#ad9266")
       ;; (fg-- "#967b4e")
 
-      (fg+  "#ebdbb2")
-      (fg   "#decb9b")
+      (fg  "#ebdbb2")
+      ;; (fg   "#decb9b")
       (fg-  "#b5a48d")
       (fg-- "#928374")
 
@@ -66,7 +66,7 @@
    'drybones
 
    ;; Basic
-   `(default                  ((t (:foreground ,fg+ :background ,bg))))
+   `(default                  ((t (:foreground ,fg :background ,bg-))))
    `(cursor                   ((t (:background ,c-))))
    `(hl-line                  ((t (:background ,bg++))))
    `(linum                    ((t (:foreground ,fg--))))
@@ -98,7 +98,7 @@
    `(isearch                  ((t (:foreground ,bg+ :background ,g+ :weight bold))))
    `(isearch-fail             ((t (:foreground ,r+))))
    `(lazy-highlight           ((t (:foreground ,g+ :weight bold))))
-   `(show-paren-match         ((t (:foreground ,c+ :weight bold))))
+   `(show-paren-match         ((t (:foreground ,c))))
    `(show-paren-mismatch      ((t (:foreground ,r+ :weight bold))))
    `(minibuffer-prompt        ((t (:foreground ,fg))))
    `(custom-state             ((t (:foreground ,g))))
@@ -162,14 +162,15 @@
 
    ;; Font-lock
    `(font-lock-builtin-face           ((t (:inherit default))))
-   `(font-lock-function-name-face     ((t (:inherit default :foreground ,y-))))
-   `(font-lock-keyword-face           ((t (:inherit default :foreground ,y-))))
+   `(font-lock-function-name-face     ((t (:inherit default :foreground ,y))))
+   `(font-lock-function-call-face     ((t (:inherit default))))
+   `(font-lock-keyword-face           ((t (:inherit default :foreground ,y))))
    `(font-lock-string-face            ((t (:foreground ,g++))))
    `(font-lock-variable-name-face     ((t (:inherit default))))
    `(font-lock-constant-face          ((t (:inherit default))))
-   `(font-lock-type-face              ((t (:inherit default))))
-   `(font-lock-preprocessor-face      ((t (:foreground ,fg--))))
-   `(font-lock-negation-char-face     ((t (:foreground ,r+))))
+   `(font-lock-type-face              ((t (:foreground ,y-))))
+   `(font-lock-preprocessor-face      ((t (:foreground ,fg))))
+   `(font-lock-negation-char-face     ((t (:foreground ,y-))))
    `(font-lock-warning-face           ((t (:foreground ,y))))
    `(font-lock-comment-face           ((t (:foreground ,fg-- :slant italic))))
    `(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face))))

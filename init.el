@@ -52,7 +52,7 @@
     (tooltip-mode    -1)
 
     ;; NOTE(law): Reduce the fringe size.
-    (fringe-mode '(2 . 2))))
+    (fringe-mode '(1 . 1))))
 
 ;; NOTE(law): Apply customization to all existing frames.
 (mapc 'law-customize-frame (frame-list))
@@ -216,6 +216,15 @@
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
 
+;; NOTE(law): Set up tree-sitter
+(setq treesit-language-source-alist
+   '((c "https://github.com/tree-sitter/tree-sitter-c")
+     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
+
+(setq major-mode-remap-alist
+ '((c-mode . c-ts-mode)
+   (c++-mode . c++-ts-mode)))
+
 ;; NOTE(law): Use evil-mode to emulate Vim keybindings.
 (unless (package-installed-p 'evil)
   (package-install 'evil))
@@ -280,13 +289,13 @@
 (defun law-highlight-comment-keywords ()
   (font-lock-add-keywords
    nil
-   `(("\\<\\(NOTE\\)\\>\\(?:(\\(\\w*\\))\\)" ; NOTE(law): Test comment.
+   `(("\\<\\(NOTE\\)\\>\\(?:(\\w*)\\)?:" ; NOTE(law): Test comment.
       (1 'font-lock-note prepend))
 
-     ("\\<\\(TODO\\)\\>\\(?:(\\(\\w*\\))\\)" ; TODO(law): Test Comment.
+     ("\\<\\(TODO\\)\\>\\(?:(\\w*)\\)?:" ; TODO(law): Test Comment.
       (1 'font-lock-todo prepend))
 
-     ("\\<\\(IMPORTANT\\)\\>\\(?:(\\(\\w*\\))\\)" ; IMPORTANT(law): Test Comment.
+     ("\\<\\(IMPORTANT\\)\\>\\(?:(\\w*)\\)?:" ; IMPORTANT(law): Test Comment.
       (1 'font-lock-important prepend)))))
 
 (defun law-highlight-number-keywords ()
@@ -318,6 +327,11 @@
      ;; Valid octal number
      ("\\b0[0-7]+[uUlL]*\\b" . 'font-lock-number-face)
 
+     ;; Valid binary number
+     ("\\b\\(0b\\)\\([01]+\\)[uUlL]*\\b"
+      (1 'font-lock-comment-face)
+      (2 'font-lock-number-face))
+
      ;; Floating point number with no digits after the period.  This must be
      ;; after the invalid numbers, otherwise it will "steal" some invalid
      ;; numbers and highlight them as valid
@@ -336,7 +350,7 @@
               (setq truncate-lines t)
 
               ;; NOTE(law): Highlight number constants.
-              (law-highlight-number-keywords)
+              ;; (law-highlight-number-keywords)
 
               ;; NOTE(law): Highlight keywords in comments.
               (law-highlight-comment-keywords)
@@ -370,13 +384,13 @@
 (add-hook 'c-mode-common-hook
           #'(lambda ()
               ;; NOTE(law): Use // instead of /*
-              (c-toggle-comment-style  -1)
+              (c-toggle-comment-style -1)
 
               ;; NOTE(law): Use electric indentation.
-              (c-toggle-electric-state -1)
+              (c-toggle-electric-state 1)
 
               ;; NOTE(law): Insert newlines after special characters.
-              ;; (c-toggle-auto-newline -1)
+              (c-toggle-auto-newline -1)
 
               ;; NOTE(law): Last turned off because insertion of parens into
               ;; existing expressions became annoying
@@ -414,7 +428,7 @@
 
 (defun law-c-mode-hook ()
   ;; NOTE(law): Remove the standard CC-mode font lock keywords.
-  (font-lock-add-keywords nil '() 'set)
+  ;; (font-lock-add-keywords nil '() 'set)
 
   ;; NOTE(law): Only highlight specific identifiers that are helpful to
   ;; differentiate in C (Function declarations, type declarations, = vs ==,
@@ -426,13 +440,19 @@
   (font-lock-add-keywords
    nil
    `(
+     ;; Operator overload
+     ;; ("operator\\([=*+/-]+\\)(" (1 'font-lock-function-decl-face))
+
      ;; struct|union|enum
-     ("\\<\\(struct\\|union\\|enum\\|extern\\)\\>"
-      (1 'font-lock-keyword-face))
+     ("^\\<\\(struct\\|union\\|enum\\)\\>"
+      (1 'font-lock-type-decl-face))
+
+     ("\\<\\(operator\\)\\>"
+      (1 'font-lock-function-decl-face))
 
      ;; struct|union|enum Foo
-     ("^\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)\\s-*$"
-      (1 'font-lock-type-decl-face))
+     ;; ("^\\(?:struct\\|union\\|enum\\)\\s-+\\(\\w*\\)\\s-*$"
+     ;;  (1 'font-lock-type-decl-face))
 
      ;; typedef ... Foo;
      ("^typedef\\s-+\\(?:.*\\)\\s-+\\**\\(\\w*\\);"
@@ -479,12 +499,20 @@
      ("^\\(__attribute__\\)"
       (1 'default))
 
-     ("^\\(?:__attribute__((\\(?:\\w+\\|,\\s-\\)*))\\s-+\\)*\\(?:\\w+\\s-+\\|\*\\)*\\(\\w+\\)("
+     ("^\\(?:__attribute__((\\(?:\\w+\\|,\\s-\\)*))\\s-+\\)*\\(?:\\w+\\(?:::\\|\\s-+\\)\\|\*\\)*\\(\\w+\\)("
       (1 'font-lock-function-decl-face))
-     )))
+     ))
+  )
 
 (add-hook 'c-mode-hook 'law-c-mode-hook)
 (add-hook 'c++-mode-hook 'law-c-mode-hook)
+
+(defun law-c-ts-mode-hook ()
+  (setq c-ts-mode-indent-offset 3)
+  (setq c-ts-mode-indent-style 'bsd))
+
+(add-hook 'c-ts-mode-hook 'law-c-ts-mode-hook)
+(add-hook 'c++-ts-mode-hook 'law-c-ts-mode-hook)
 
 (defun law-js-mode-hook ()
   (font-lock-add-keywords
